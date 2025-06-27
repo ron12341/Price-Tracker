@@ -1,13 +1,30 @@
+import datetime
 from fastapi import FastAPI
-from db.mongodb import products_collection
+from models import ScrapeRequest, ScrapeResponse
+
+from scrapers.scrape_amazon import scrape_amazon
 
 app = FastAPI()
 
-@app.get("/")
-async def root():
-    return {"message": "FastAPI backend is running."}
+@app.post("/scrape", response_model=ScrapeResponse)
+async def scrape(request: ScrapeRequest):
+    results = []
 
-@app.get("/products")
-async def get_products():
-    products = list(products_collection.find({}, {"_id": 0}))
-    return {"products": products}
+    for store in request.stores:
+        storeName = store.storeName.lower()
+        if storeName == "amazon":
+            price = scrape_amazon(store.url)
+        elif storeName == "ebay":
+            price = "N/A"
+        elif storeName == "walmart":
+            price = "N/A"
+        else:
+            price = "N/A"
+        
+        results.append({
+            "storeName": storeName,
+            "price": price,
+            "url": store.url
+        })
+
+    return {"stores": results, "scrapedAt": str(datetime.datetime.now())}
