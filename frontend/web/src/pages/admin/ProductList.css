@@ -1,0 +1,166 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.listpage-container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+}
+
+.listpage-container .breadcrumb-container {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  background-color: #f2f2f2;
+}
+
+.listpage-container .content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #5f5d5d;
+  flex: 1;
+}
+
+.listpage-container .content .table-container {
+  width: 30%;
+}
+
+.listpage-container .content table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.listpage-container .content th,
+.listpage-container .content td {
+  text-align: left;
+  padding: 10px;
+  height: 50px;
+  border: 1px solid #c8c7c7;
+}
+
+.listpage-container .content th {
+  font-size: 30px;
+}
+
+.listpage-container .content td {
+  font-size: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.listpage-container .content tr:nth-child(even) {
+  background-color: #c1bfbf;
+}
+
+.listpage-container .content .list-container {
+  flex: 1;
+  background-color: #333333;
+  padding: 20px;
+  color: #fff;
+}
+
+.listpage-container .header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.listpage-container .action-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  margin-bottom: 25px;
+}
+
+.listpage-container .action-container p {
+  font-size: 15px;
+}
+
+.listpage-container .action-container select {
+  width: 150px;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #727272;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 15px;
+}
+
+.listpage-container .action-container button {
+  background-color: transparent;
+  font-size: 16px;
+  color: #fff;
+  padding: 5px 10px;
+  border: 1px solid #727272;
+  border-radius: 5px;
+}
+
+.listpage-container .action-container button:hover {
+  background-color: #fff;
+  color: #333;
+}
+
+.listpage-container option {
+  color: #000;
+}
+
+.listpage-container .content .list {
+  display: flex;
+  flex-direction: column;
+}
+
+.listpage-container .content .list .list-item-container {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  color: #333;
+  background-color: #c1bfbf;
+  padding: 10px;
+}
+
+.listpage-container .list-item-container input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.listpage-container .list .list-item-container:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.listpage-container .list .list-item-container.title {
+  background-color: #41737a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.listpage-container .counter-container {
+  margin-top: 5px;
+  padding: 15px 10px 15px 10px;
+  font-size: 17px;
+  border-top: 1px solid #909090;
+  border-bottom: 1px solid #909090;
+}
+
+.listpage-container button,
+.listpage-container select,
+.listpage-container input[type="checkbox"],
+.listpage-container td {
+  cursor: pointer;
+}

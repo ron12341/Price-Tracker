@@ -4,16 +4,16 @@ import axios from "axios";
 const Products = () => {
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/products");
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/products");
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -23,7 +23,7 @@ const Products = () => {
       {products && products.length > 0 ? (
         <ul>
           {products.map((product) => (
-            <li key={product.id}>{product.name}</li>
+            <li key={product.query}>{product.name}</li>
           ))}
         </ul>
       ) : (

@@ -1,0 +1,47 @@
+.dashboard-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-container h2 {
+  margin-bottom: 20px;
+}
+
+.dashboard-container .product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-container .product-table th,
+.dashboard-container .product-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: top;
+}
+
+.dashboard-container .product-table th {
+  background-color: #f4f4f4;
+}
+
+.dashboard-container .store-info {
+  margin-bottom: 10px;
+}
+
+.dashboard-container .store-info p {
+  margin: 0;
+}
+
+.dashboard-container button {
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-radius: 4px;
+}
+
+.dashboard-container button:hover {
+  background-color: #0056b3;
+}

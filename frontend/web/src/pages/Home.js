@@ -1,10 +1,11 @@
+import AddProductPopup from "./admin/components/AddProductPopup";
 
 const Home = () => {
-    return (
-        <div>
-            <h1>Home</h1>
-        </div>
-    );
-}
+  return (
+    <div>
+      <AddProductPopup />
+    </div>
+  );
+};
 
-export default Home
+export default Home;
