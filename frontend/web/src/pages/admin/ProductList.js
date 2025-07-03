@@ -7,7 +7,7 @@ import AddProductPopup from "./components/AddProductPopup";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
-  const [checkedBoxes, setCheckBoxes] = useState(0);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [action, setAction] = useState("");
 
   const [showAddProductPopup, setShowAddProductPopup] = useState(false);
@@ -20,35 +20,52 @@ function ProductList() {
     try {
       const response = await axios.get("http://localhost:5000/products");
       setProducts(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  const handleSelectAll = () => {
-    var checkboxTitle = document.querySelector("#checkbox-title");
-    var checkboxes = document.querySelectorAll("#checkbox");
+  const handleDeleteSelectedProducts = async () => {
+    try {
+      if (selectedProductIds.length === 0) {
+        alert("Please select at least one product to delete.");
+        return;
+      }
 
-    checkboxes.forEach((checkbox) => {
-      checkbox.checked = checkboxTitle.checked;
-    });
+      console.log(selectedProductIds);
 
-    setCheckBoxes(checkboxTitle.checked ? checkboxes.length : 0);
+      const response = await axios.post(
+        "http://localhost:5000/products/bulk-delete",
+        {
+          ids: selectedProductIds,
+        }
+      );
+      console.log(response.data);
+      refreshPage();
+    } catch (error) {
+      console.error("Error deleting products:", error);
+    }
   };
 
-  const handleCheckbox = () => {
-    var checkboxTitle = document.querySelector("#checkbox-title");
-    var checkboxes = document.querySelectorAll("#checkbox");
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedProductIds(products.map((product) => product._id));
+    } else {
+      setSelectedProductIds([]);
+    }
+  };
 
-    var checked = 0;
-    checkboxes.forEach((checkbox) => {
-      if (checkbox.checked) {
-        checked++;
-      }
-    });
+  const handleCheckbox = (e) => {
+    const productId = e.target.id;
 
-    setCheckBoxes(checked);
-    checkboxTitle.checked = checked === checkboxes.length;
+    if (e.target.checked) {
+      setSelectedProductIds([...selectedProductIds, productId]);
+    } else {
+      setSelectedProductIds(
+        selectedProductIds.filter((id) => id !== productId)
+      );
+    }
   };
 
   useEffect(() => {
@@ -100,9 +117,17 @@ function ProductList() {
               <option value="default">--------</option>
               <option value="delete">Delete</option>
             </select>
-            <button>Apply</button>
+            <button
+              onClick={() => {
+                if (action === "delete") {
+                  handleDeleteSelectedProducts();
+                }
+              }}
+            >
+              Apply
+            </button>
             <p>
-              {checkedBoxes} of {products.length} selected
+              {selectedProductIds.length} of {products.length} selected
             </p>
           </div>
 
@@ -111,13 +136,22 @@ function ProductList() {
               <input
                 type="checkbox"
                 id="checkbox-title"
-                onClick={handleSelectAll}
+                checked={
+                  selectedProductIds.length === products.length &&
+                  products.length > 0
+                }
+                onChange={handleSelectAll}
               />
               <p id="title">Select All</p>
             </div>
             {products.map((product, index) => (
               <div className="list-item-container item">
-                <input type="checkbox" id="checkbox" onClick={handleCheckbox} />
+                <input
+                  type="checkbox"
+                  id={product._id}
+                  checked={selectedProductIds.includes(product._id)}
+                  onChange={handleCheckbox}
+                />
                 <p>{product.name}</p>
               </div>
             ))}
