@@ -122,4 +122,32 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/bulk-delete", async (req, res) => {
+  try {
+    if (!req.body.ids) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+    const { ids } = req.body;
+    const result = await Product.deleteMany({ _id: { $in: ids } });
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * @route DELETE /products/:id
+ * @desc Delete a product from the database
+ * @access Public
+ */
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Product.deleteOne({ _id: id });
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
