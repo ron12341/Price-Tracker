@@ -75,7 +75,7 @@ router.get("/search", async (req, res) => {
  */
 router.post("/", async (req, res) => {
   try {
-    const { name, query, stores } = req.body;
+    const { name, query, imageUrl, stores } = req.body;
 
     // Validate required fields
     if (!name || !query || !stores) {
@@ -108,7 +108,13 @@ router.post("/", async (req, res) => {
     // Save the product to the database
     const updated = await Product.findOneAndUpdate(
       { query },
-      { name: query, query, scrapedAt: new Date(), stores: data.stores },
+      {
+        name: query,
+        query,
+        scrapedAt: new Date(),
+        imageUrl: imageUrl,
+        stores: data.stores,
+      },
       { upsert: true, new: true }
     );
 

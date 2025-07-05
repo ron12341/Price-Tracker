@@ -4,6 +4,7 @@ const productSchema = new mongoose.Schema({
   name: String,
   query: String,
   scrapedAt: Date,
+  imageUrl: String,
   stores: [
     {
       storeName: String,
