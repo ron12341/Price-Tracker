@@ -24,23 +24,20 @@ router.get("/", async (req, res) => {
 });
 
 /**
- * @route GET /products/search
- * @desc Search for a product by name
- * @param {string} q - The name of the product to search for
- * @returns {object} A product object with the name and stores
- * @returns {object} An error object with a message if the search fails
+ * @route GET /products/:id
+ * @desc Fetch a specific product from the database
  * @access Public
  */
-router.get("/search", async (req, res) => {
-  const query = req.query.q?.trim().toLowerCase();
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
 
-  if (!query) {
-    return res.status(400).json({ message: "Missing query parameter" });
+  if (!id) {
+    return res.status(400).json({ message: "Missing required fields (id)" });
   }
 
   try {
-    // Check if the product is already cached
-    const cachedProduct = await Product.findOne({ query });
+    // Check if the product is cached
+    const cachedProduct = await Product.findById(id);
     const now = new Date();
 
     if (cachedProduct && now - cachedProduct.scrapedAt < MAX_CACHE_TIME) {
@@ -50,20 +47,20 @@ router.get("/search", async (req, res) => {
 
     // If not cached, trigger scraper in FastAPI
     const response = await axios.post("http://localhost:8000/scrape", {
-      query,
+      query: cachedProduct.query,
+      stores: cachedProduct.stores,
     });
     const data = response.data;
 
     // Save the product to the database
-    const updated = await Product.findOneAndUpdate(
-      { query },
-      { name: query, query, scrapedAt: new Date(), stores: data.stores },
+    const updated = await Product.findByIdAndUpdate(
+      { _id: id },
+      { scrapedAt: new Date(), stores: data.stores },
       { upsert: true, new: true }
     );
 
     return res.json({ source: "scraped", product: updated });
   } catch (err) {
-    console.error("FastAPI scraper failed:", err.message);
     return res.status(500).json({ error: "Scraping failed" });
   }
 });

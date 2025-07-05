@@ -6,6 +6,7 @@ import "./AddProductPopup.css";
 const AddProductPopup = ({ onClose }) => {
   const [productName, setProductName] = useState("");
   const [productQuery, setProductQuery] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [stores, setStores] = useState([{ storeName: "", url: "" }]);
 
   const handleStoreChange = (index, field, value) => {
@@ -29,7 +30,12 @@ const AddProductPopup = ({ onClose }) => {
 
     // Validate required fields
     while (true) {
-      if (productName === "" || productQuery === "" || stores.length === 0) {
+      if (
+        productName === "" ||
+        productQuery === "" ||
+        stores.length === 0 ||
+        imageUrl === ""
+      ) {
         alert("Please fill in all fields.");
         return;
       }
@@ -50,6 +56,7 @@ const AddProductPopup = ({ onClose }) => {
       const response = await axios.post("http://localhost:5000/products", {
         name: productName,
         query: productQuery,
+        imageUrl: imageUrl,
         stores: stores,
       });
 
@@ -84,6 +91,17 @@ const AddProductPopup = ({ onClose }) => {
             placeholder="Query"
             value={productQuery}
             onChange={(e) => setProductQuery(e.target.value)}
+            required
+          />
+        </label>
+
+        <label>
+          Image URL*:
+          <input
+            type="text"
+            placeholder="Image URL"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
             required
           />
         </label>

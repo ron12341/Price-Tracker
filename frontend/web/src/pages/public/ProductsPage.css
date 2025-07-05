@@ -1,0 +1,28 @@
+.products-page {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+  flex-direction: column;
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+}
+
+.products-page .content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+.products-page .content h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.products-page .content .products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
