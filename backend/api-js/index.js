@@ -10,9 +10,17 @@ app.use(cors());
 // JSON
 app.use(express.json());
 
-// Routes
+// ROUTES
+// Public routes
 const productsRouter = require("./routes/products");
 app.use("/products", productsRouter);
+
+const authRouter = require("./routes/auth");
+app.use("/auth", authRouter);
+
+// Private routes
+const adminProductsRouter = require("./routes/admin/products");
+app.use("/admin/products", adminProductsRouter);
 
 // Health check
 app.get("/", (req, res) => {
