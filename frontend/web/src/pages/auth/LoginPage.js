@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { login } from "../../services/authService";
 import "./AuthPageStyles.css";
 
 const LoginPage = () => {
@@ -21,15 +21,16 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:5000/auth/login", {
-        email,
-        password,
-      });
-      const { token, isAdmin } = response.data;
+      const { token, isAdmin } = await login(email, password);
       setUser({ token, isAdmin });
 
-      if (isAdmin && from.startsWith("/admin")) {
-        navigate(from);
+      if (from.startsWith("/admin")) {
+        if (isAdmin) {
+          navigate("/admin");
+        } else {
+          alert("You are not authorized to access this page.");
+          navigate("/");
+        }
       } else {
         navigate("/");
       }
@@ -38,10 +39,12 @@ const LoginPage = () => {
     }
   };
 
+  const goToRegister = () => navigate("/auth/register");
+
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1 className="logo-text">Price Tracker</h1>
+        <h1 className="logo-text">Login</h1>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -60,7 +63,7 @@ const LoginPage = () => {
           </button>
         </form>
         <div className="auth-links">
-          <button className="link-button" onClick={() => alert("Sign up")}>
+          <button className="link-button" onClick={goToRegister}>
             Sign Up
           </button>
         </div>

@@ -1,9 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
-
+import { addProduct } from "../../../services/admin/productService";
 import "./AddProductPopup.css";
 
-const AddProductPopup = ({ onClose }) => {
+const AddProductPopup = ({ onClose, onSubmit }) => {
   const [productName, setProductName] = useState("");
   const [productQuery, setProductQuery] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -53,15 +52,13 @@ const AddProductPopup = ({ onClose }) => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/products", {
+      await addProduct({
         name: productName,
         query: productQuery,
-        imageUrl: imageUrl,
-        stores: stores,
+        imageUrl,
+        stores,
       });
-
-      console.log(response.data);
-      onClose();
+      onSubmit();
       alert("Product added successfully!");
     } catch (err) {
       alert(err.response.data.error);

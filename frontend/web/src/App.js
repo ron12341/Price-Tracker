@@ -1,16 +1,12 @@
 import { BrowserRouter } from "react-router-dom";
-import PublicRoutes from "./routes/PublicRoutes";
-import AdminRoutes from "./routes/AdminRoutes";
-import AuthRoutes from "./routes/AuthRoutes";
 import { AuthProvider } from "./context/AuthContext";
+import AppRoutes from "./routes/AppRoutes";
 
 const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <PublicRoutes />
-        <AuthRoutes />
-        <AdminRoutes />
+        <AppRoutes />
       </BrowserRouter>
     </AuthProvider>
   );

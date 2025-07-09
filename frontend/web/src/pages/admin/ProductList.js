@@ -1,9 +1,9 @@
+import "./ProductList.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
-import "./ProductList.css";
 import Navbar from "./components/Navbar";
 import AddProductPopup from "./components/AddProductPopup";
+import { deleteProducts } from "../../services/admin/productService";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -20,7 +20,6 @@ function ProductList() {
     try {
       const response = await axios.get("http://localhost:5000/products");
       setProducts(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -33,15 +32,7 @@ function ProductList() {
         return;
       }
 
-      console.log(selectedProductIds);
-
-      const response = await axios.post(
-        "http://localhost:5000/products/bulk-delete",
-        {
-          ids: selectedProductIds,
-        }
-      );
-      console.log(response.data);
+      await deleteProducts(selectedProductIds);
       refreshPage();
     } catch (error) {
       console.error("Error deleting products:", error);
@@ -144,15 +135,15 @@ function ProductList() {
               />
               <p id="title">Select All</p>
             </div>
-            {products.map((product, index) => (
-              <div className="list-item-container item">
+            {products.map((product) => (
+              <div className="list-item-container item" key={product._id}>
                 <input
                   type="checkbox"
                   id={product._id}
                   checked={selectedProductIds.includes(product._id)}
                   onChange={handleCheckbox}
                 />
-                <p>{product.name}</p>
+                <p>{product.query}</p>
               </div>
             ))}
           </div>
@@ -166,6 +157,9 @@ function ProductList() {
       {showAddProductPopup && (
         <AddProductPopup
           onClose={() => {
+            setShowAddProductPopup(false);
+          }}
+          onSubmit={() => {
             setShowAddProductPopup(false);
             refreshPage();
           }}

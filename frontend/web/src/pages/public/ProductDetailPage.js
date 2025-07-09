@@ -5,11 +5,18 @@ import "./ProductDetailPage.css";
 
 import Narvbar from "./components/Navbar";
 
-const product = {
-  name: "Asus PRIME GeForce RTX 5060 Ti 16 GB Video Card",
-  query: "Asus PRIME GeForce RTX 5060 Ti 16 GB Video Card",
-  price: "619.99",
-  img: "https://m.media-amazon.com/images/I/81aN+w8d4GL._AC_SL1500_.jpg",
+const formatDate = (isoString) => {
+  const date = new Date(isoString);
+  const formatted = date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return formatted;
 };
 
 const ProductDetailPage = () => {
@@ -17,20 +24,22 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProduct = async () => {
-    try {
-      const response = await axios.get(`http://localhost:5000/products/${id}`);
-      console.log(response.data);
-      setProduct(response.data);
-    } catch (error) {
-      console.error("Error fetching product:", error);
-      setProduct(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const controller = new AbortController();
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/products/${id}`
+        );
+        console.log(response);
+        setProduct(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        setProduct(null);
+      }
+    };
+
     fetchProduct();
   }, [id]);
 
@@ -53,6 +62,7 @@ const ProductDetailPage = () => {
           <img src={product.imageUrl} alt={product.name} />
         </div>
         <div className="right-container">
+          <p>Last Scraped at: {formatDate(product.scrapedAt)}</p>
           <div className="prices-container">
             <table>
               <thead>
@@ -66,7 +76,7 @@ const ProductDetailPage = () => {
 
               <tbody>
                 {product.stores.map((store) => (
-                  <tr>
+                  <tr key={store.storeName}>
                     <td>{store.storeName}</td>
                     <td>Available</td>
                     <td>{store.price}</td>
