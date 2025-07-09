@@ -3,7 +3,7 @@ const router = express.Router();
 const Product = require("../models/Product");
 const axios = require("axios");
 
-const MAX_CACHE_TIME = 6 * 60 * 60 * 1000; // 6 hour in milliseconds
+const MAX_CACHE_TIME = 0; // 6 hour in milliseconds
 
 /**
  * @route GET /products
@@ -45,23 +45,32 @@ router.get("/:id", async (req, res) => {
       return res.json(cachedProduct);
     }
 
-    // If not cached, trigger scraper in FastAPI
-    const response = await axios.post("http://localhost:8000/scrape", {
-      query: cachedProduct.query,
-      stores: cachedProduct.stores,
-    });
-    const data = response.data;
+    try {
+      // If not cached, trigger scraper in FastAPI
+      const response = await axios.post("http://localhost:8000/scrape", {
+        query: cachedProduct.query,
+        stores: cachedProduct.stores,
+      });
+      const data = response.data;
 
-    // Save the product to the database
-    const updated = await Product.findByIdAndUpdate(
-      { _id: id },
-      { scrapedAt: new Date(), stores: data.stores },
-      { upsert: true, new: true }
-    );
+      // Save the product to the database
+      const updated = await Product.findByIdAndUpdate(
+        { _id: id },
+        { scrapedAt: new Date(), stores: data.stores },
+        { upsert: true, new: true }
+      );
 
-    return res.json({ source: "scraped", product: updated });
+      return res.json(updated);
+    } catch (scrapeError) {
+      if (cachedProduct) {
+        return res.json(cachedProduct);
+      }
+      return res
+        .status(500)
+        .json({ error: "Scraping failed and no cached data" });
+    }
   } catch (err) {
-    return res.status(500).json({ error: "Scraping failed" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 
