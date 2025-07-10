@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from models import ScrapeRequest, ScrapeResponse
 
 from scrapers.scrape_amazon import scrape_amazon
+from scrapers.scrape_walmart import scrape_walmart
 
 app = FastAPI()
 
@@ -17,7 +18,7 @@ async def scrape(request: ScrapeRequest):
         elif storeName == "ebay":
             price = "N/A"
         elif storeName == "walmart":
-            price = "N/A"
+            price = scrape_walmart(store.url)
         else:
             price = "N/A"
         
