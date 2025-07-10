@@ -1,22 +1,39 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 import "./ProductCard.css";
 
-// const product = {
-//   name: "Asus PRIME GeForce RTX 5060 Ti 16 GB Video Card",
-//   query: "Asus PRIME GeForce RTX 5060 Ti 16 GB Video Card",
-//   price: "619.99",
-//   img: "https://m.media-amazon.com/images/I/81aN+w8d4GL._AC_SL1500_.jpg",
-// };
-
 const ProductCard = ({ product }) => {
+  const [lowestPriceStore, setLowestPriceStore] = useState(product.stores[0]);
+
+  const findLowestPrice = () => {
+    let lowestPriceStore = product.stores[0];
+    for (let i = 1; i < product.stores.length; i++) {
+      if (product.stores[i].price < lowestPriceStore.price) {
+        lowestPriceStore = product.stores[i];
+      }
+    }
+    return lowestPriceStore;
+  };
+
+  useEffect(() => {
+    setLowestPriceStore(findLowestPrice());
+  }, []);
+
   return (
-    <Link to={`/products/${product._id}`}>
-      <div className="product-card">
+    <div className="product-card">
+      <Link to={`/products/${product._id}`}>
         <img src={product.imageUrl} alt={product.name} />
-        <p>{product.query}</p>
+        <p className="product-name">{product.query}</p>
+      </Link>
+      <div className="price-container">
+        <p>
+          <span className="price-symbol">$</span>
+          {lowestPriceStore.price}
+        </p>
+        <p className="store-name">{lowestPriceStore.storeName}</p>
       </div>
-    </Link>
+    </div>
   );
 };
 

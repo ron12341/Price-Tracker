@@ -55,14 +55,16 @@ const ProductDetailPage = () => {
     <div className="product-detail-page">
       <Narvbar />
       <div className="product-name-container">
-        <h1>{product.name}</h1>
+        <h2>{product.name}</h2>
       </div>
       <div className="content">
         <div className="left-container">
           <img src={product.imageUrl} alt={product.name} />
         </div>
         <div className="right-container">
-          <p>Last Scraped at: {formatDate(product.scrapedAt)}</p>
+          <p className="scraped-at">
+            Last Scraped at: {formatDate(product.scrapedAt)}
+          </p>
           <div className="prices-container">
             <table>
               <thead>
@@ -79,7 +81,7 @@ const ProductDetailPage = () => {
                   <tr key={store.storeName}>
                     <td>{store.storeName}</td>
                     <td>Available</td>
-                    <td>{store.price}</td>
+                    <td>${store.price}</td>
                     <td className="buy-button">
                       <a
                         href={store.url}
