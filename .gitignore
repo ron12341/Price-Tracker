@@ -1,31 +1,43 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# === Python ===
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+
+# === Node/JavaScript ===
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# === Environment Variables ===
+.env
+.env.*
+
+# === Testing ===
 /coverage
 
-# production
+# === Production Builds ===
 /build
 /dist
 .cache
 
-# misc
-.DS_Store
-Thumbs.db
-.env
-.env.*
+# === Logs ===
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-logs/
-*.log
+
+# === Misc ===
+.DS_Store
+Thumbs.db
 .eslintcache
 
-# IDE/editor folders
+# === IDE/Editor Folders ===
 .vscode/
 .idea/
 *.swp
