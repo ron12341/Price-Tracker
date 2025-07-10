@@ -1,3 +1,18 @@
+## Install Dependencies
+
+cd backend/api-python
+python -m venv venv
+
+Windows:
+venv\Scripts\activate
+macOS/Linux:
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+cd backend/api-js
+npm install
+
 ## How to Run
 
 ### FastAPI Scraper:
