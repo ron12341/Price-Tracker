@@ -9,7 +9,9 @@ const ProductCard = ({ product }) => {
   const findLowestPrice = () => {
     let lowestPriceStore = product.stores[0];
     for (let i = 1; i < product.stores.length; i++) {
-      if (product.stores[i].price < lowestPriceStore.price) {
+      if (
+        parseInt(product.stores[i].price) < parseInt(lowestPriceStore.price)
+      ) {
         lowestPriceStore = product.stores[i];
       }
     }

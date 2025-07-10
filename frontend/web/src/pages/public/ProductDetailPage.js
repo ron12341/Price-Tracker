@@ -24,14 +24,21 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const sortByPrice = (stores) => {
+    return stores.sort((a, b) => a.price - b.price);
+  };
+
   useEffect(() => {
-    const controller = new AbortController();
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
           `http://localhost:5000/products/${id}`
         );
-        console.log(response);
+
+        // Sort stores by price
+        if (response.data.stores.length > 0) {
+          response.data.stores = sortByPrice(response.data.stores);
+        }
         setProduct(response.data);
         setLoading(false);
       } catch (error) {
@@ -79,7 +86,7 @@ const ProductDetailPage = () => {
               <tbody>
                 {product.stores.map((store) => (
                   <tr key={store.storeName}>
-                    <td>{store.storeName}</td>
+                    <td className="store-name">{store.storeName}</td>
                     <td>Available</td>
                     <td>${store.price}</td>
                     <td className="buy-button">

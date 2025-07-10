@@ -95,6 +95,10 @@
   color: #666;
 }
 
+.product-detail-page .store-name {
+  text-transform: capitalize;
+}
+
 @media screen and (max-width: 950px) {
   .product-detail-page .content {
     width: 100%;
