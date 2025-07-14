@@ -1,9 +1,10 @@
 import axios from "axios";
 
 const baseUrl = process.env.REACT_APP_API_URL + "/admin/products";
-const token = JSON.parse(localStorage.getItem("user"))?.token;
 
 const addProduct = async ({ name, query, imageUrl, stores }) => {
+  const token = JSON.parse(localStorage.getItem("user"))?.token;
+  console.log(token);
   try {
     const response = await axios.post(
       `${baseUrl}`,
@@ -27,6 +28,7 @@ const addProduct = async ({ name, query, imageUrl, stores }) => {
 };
 
 const deleteProducts = async (ids) => {
+  const token = JSON.parse(localStorage.getItem("user"))?.token;
   try {
     const response = await axios.post(
       `${baseUrl}/bulk-delete`,
