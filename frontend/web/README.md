@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+# Price Tracker Frontend Web (React)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the web interface for the Price Tracker application. It allows users to view, search, and manage tracked products, and for admins to add and delete them.
 
-## Available Scripts
+## Tech Stack
 
-In the project directory, you can run:
+- React
+- Axios
+- React Router
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Installation
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```bash
+npm install
+```
 
-### `npm test`
+### Run the Development Server
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm start
+```
 
-### `npm run build`
+The app will start at:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+http://localhost:3000
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Environment Variables
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Create a `.env` file in this folder with the following:
 
-### `npm run eject`
+```
+REACT_APP_API_URL=http://localhost:5000
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This URL should point to your running backend server.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Authentication and Admin Access
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- JWT tokens tokens and admin status are stored in `localStorage` under a `user` object:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  ```json
+  {
+    "token": "<JWT_TOKEN>",
+    "isAdmin": false /* or true */
+  }
+  ```
 
-## Learn More
+- Requests to protected endpoints (e.g., `/admin/products`) use `Authorization: Bearer <token>`.
+- Admin access is required for manipulating products (add, delete, update).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Auth Context
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The app uses a custom `AuthContext` to manage authentication state globally. User information is saved to and retrieved from `localStorage`, and exposed through the `useAuth()` hook.
 
-### Code Splitting
+### Admin Access Middleware
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Admin-only pages are protected using the `AdminAccess` wrapper component. It checks:
 
-### Analyzing the Bundle Size
+- If the user is logged in
+- If the user has `isAdmin: true`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Features
 
-### Making a Progressive Web App
+### Public Pages
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Authentication page
+- View a list of products
+- See price comparisons from multiple stores
 
-### Advanced Configuration
+### Admin Pages
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Add and delete products
+- View list of users
 
-### Deployment
+## API Integration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This frontend connects to the backend API provided in `../../backend/api-js` using Axios. Ensure both servers are running during development. If adding a product, ensure the scraping service in `../../backend/api-python` is running.
