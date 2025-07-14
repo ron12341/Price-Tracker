@@ -32,6 +32,7 @@ router.post("/", async (req, res) => {
       name,
       query,
       imageUrl,
+      scrapedAt: new Date(),
       stores: data.stores,
     });
 
