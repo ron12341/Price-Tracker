@@ -4,7 +4,6 @@ import "./Navbar.css";
 
 const Navbar = () => {
   const { setUser } = useAuth();
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     setUser(null);

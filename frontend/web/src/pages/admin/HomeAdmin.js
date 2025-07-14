@@ -10,12 +10,6 @@ const HomeAdmin = () => {
     { name: "Product 3", item: "Product 3" },
   ];
 
-  const users = [
-    { name: "User 1", item: "User 1" },
-    { name: "User 2", item: "User 2" },
-    { name: "User 3", item: "User 3" },
-  ];
-
   const navigate = useNavigate();
 
   const goToProducts = () => {
