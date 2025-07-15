@@ -24,10 +24,8 @@ def scrape_amazon(url: str) -> str:
         
         price = None
         price_ids = [
-            "corePriceDisplay_desktop_feature_div",  
-            "priceblock_ourprice",                      # Regular price
-            "priceblock_saleprice",                     # Sale price
-            "priceblock_dealprice",                     # Deal price          
+            "a-offscreen",
+            "a-price-whole"
         ]
 
         for price_id in price_ids:
@@ -35,16 +33,6 @@ def scrape_amazon(url: str) -> str:
             if price_element and price_element.text.strip():
                 price = price_element.text.strip()
                 break
-
-        if not price:
-            price_element = soup.find(class_="a-offscreen")
-            if price_element and price_element.text.strip():
-                price = price_element.text.strip()
-
-        if not price:
-            price_element = soup.find(class_="a-price-whole")
-            if price_element and price_element.text.strip():
-                price = price_element.text.strip()
 
         if not price:
             return "N/A"
