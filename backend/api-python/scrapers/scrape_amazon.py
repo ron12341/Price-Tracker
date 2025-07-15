@@ -24,7 +24,7 @@ def scrape_amazon(url: str) -> str:
         
         price = None
         price_ids = [
-            "corePriceDisplay_desktop_feature_div"  
+            "corePriceDisplay_desktop_feature_div",  
             "priceblock_ourprice",                      # Regular price
             "priceblock_saleprice",                     # Sale price
             "priceblock_dealprice",                     # Deal price          
@@ -49,7 +49,7 @@ def scrape_amazon(url: str) -> str:
         if not price:
             return "N/A"
 
-        return price.replace("$", "").replace(",", "").strip()
+        return price.replace("$", "").replace(",", "")
     
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
