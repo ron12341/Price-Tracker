@@ -40,13 +40,13 @@ class TestScrapeWalmart(unittest.TestCase):
             mock_bs.side_effect = Exception('Mocked exception')
             self.assertEqual(scrape_walmart(url), 'N/A')
 
-    def test_invalid_url(self):
-        url = 'invalid_url'
+    def test_empty_url(self):
+        url = ''
         result = scrape_walmart(url)
         self.assertEqual(result, 'N/A')
 
-    def test_empty_url(self):
-        url = ''
+    def test_invalid_url(self):
+        url = 'invalid_url'
         result = scrape_walmart(url)
         self.assertEqual(result, 'N/A')
 
