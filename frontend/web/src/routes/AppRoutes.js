@@ -6,7 +6,6 @@ import ProductDetailPage from "../pages/public/ProductDetailPage";
 import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
 import HomeAdmin from "../pages/admin/HomeAdmin";
-import Dashboard from "../pages/admin/Dashboard";
 import ProductList from "../pages/admin/ProductList";
 import AdminAccess from "../middleware/AdminAccess";
 
@@ -31,14 +30,7 @@ const AppRoutes = () => {
           </AdminAccess>
         }
       />
-      <Route
-        path="/admin/dashboard"
-        element={
-          <AdminAccess>
-            <Dashboard />
-          </AdminAccess>
-        }
-      />
+
       <Route
         path="/admin/products"
         element={

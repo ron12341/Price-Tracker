@@ -1,52 +1,66 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 
-import "./HomeAdmin.css";
-
 const HomeAdmin = () => {
-  const products = [
-    { name: "Product 1", item: "Product 1" },
-    { name: "Product 2", item: "Product 2" },
-    { name: "Product 3", item: "Product 3" },
-  ];
-
   const navigate = useNavigate();
 
   const goToProducts = () => {
-    navigate("/admin/products", { state: { items: products } });
+    navigate("/admin/products");
+  };
+
+  const goToProductSuggestions = () => {
+    navigate("/admin/product-suggestions");
   };
 
   return (
-    <div>
-      <div className="home-container">
-        <Navbar />
+    <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
+      <Navbar />
 
-        <div className="content">
-          <h1>Site Administration</h1>
+      <div className="flex flex-col p-5">
+        <h1 className="text-4xl font-semibold mb-5">Site Administration</h1>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Collections</th>
-              </tr>
-            </thead>
+        <table className="w-3/4 border-collapse mt-5 mb-5 border border-gray-300">
+          <thead>
+            <tr>
+              <th className="text-left text-3xl border border-gray-300 p-4">
+                Collections
+              </th>
+            </tr>
+          </thead>
 
-            <tbody>
-              <tr>
-                <td onClick={goToProducts}>
-                  <p>Products</p>
-                  <button>Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <p>Users</p>
-                  <button>Delete</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+          <tbody>
+            <tr
+              className="hover:bg-gray-300 cursor-pointer border border-gray-300"
+              onClick={goToProducts}
+            >
+              <td className="text-2xl flex justify-between items-center p-4">
+                <p>Products</p>
+                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <tr
+              className="hover:bg-gray-300 cursor-pointer border border-gray-300"
+              onClick={goToProductSuggestions}
+            >
+              <td className="text-2xl flex justify-between items-center p-4">
+                <p>Product Suggestions</p>
+                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <tr className="hover:bg-gray-300 cursor-pointer border border-gray-300">
+              <td className="text-2xl flex justify-between items-center p-4">
+                <p>Users</p>
+                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );

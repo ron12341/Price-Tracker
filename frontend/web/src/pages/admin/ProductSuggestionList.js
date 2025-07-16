@@ -1,35 +1,19 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "./AdminLayout";
-import AddProductPopup from "./components/AddProductPopup";
-import {
-  deleteProducts,
-  addProduct,
-} from "../../services/admin/productService";
-import { fetchProducts } from "../../services/public/productService";
+import { fetchProductSuggestions } from "../../services/admin/productSuggestionService";
 
-const ProductListPage = () => {
-  const [products, setProducts] = useState([]);
+const ProductSuggestionListPage = () => {
+  const [productSuggestions, setProductSuggestions] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [action, setAction] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
 
-  const handleFetchProducts = async () => {
+  const handleFetch = async () => {
     try {
-      const res = await fetchProducts();
-      setProducts(res);
+      const res = await fetchProductSuggestions();
+      setProductSuggestions(res);
     } catch (err) {
-      console.error("Error fetching products:", err);
-    }
-  };
-
-  const handleAddProduct = async (name, query, imageUrl, stores) => {
-    try {
-      console.log(name, query, imageUrl, stores);
-      await addProduct(name, query, imageUrl, stores);
-      setShowAddPopup(false);
-    } catch (err) {
-      alert(err.response.data.error);
-      console.error("Error adding product:", err);
+      console.error("Error fetching product suggestions:", err);
     }
   };
 
@@ -66,7 +50,7 @@ const ProductListPage = () => {
   };
 
   useEffect(() => {
-    handleFetchProducts();
+    handleFetch();
   }, []);
 
   return (
@@ -77,7 +61,7 @@ const ProductListPage = () => {
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
           onClick={() => setShowAddPopup(true)}
         >
-          Add Product
+          Add
         </button>
       </div>
 
@@ -98,7 +82,7 @@ const ProductListPage = () => {
           Apply
         </button>
         <p>
-          {selectedIds.length} of {products.length} selected
+          {selectedIds.length} of {productSuggestions.length} selected
         </p>
       </div>
 
@@ -107,7 +91,8 @@ const ProductListPage = () => {
           <input
             type="checkbox"
             checked={
-              products.length > 0 && selectedIds.length === products.length
+              productSuggestions.length > 0 &&
+              selectedIds.length === productSuggestions.length
             }
             onChange={handleSelectAll}
             className="w-5 h-5 mr-3"
@@ -115,7 +100,7 @@ const ProductListPage = () => {
           <p>Select All</p>
         </div>
 
-        {products.map((product) => (
+        {productSuggestions.map((product) => (
           <div
             key={product._id}
             className="flex items-center px-4 py-3 bg-gray-300 text-black rounded hover:bg-gray-200"
@@ -133,17 +118,14 @@ const ProductListPage = () => {
       </div>
 
       <div className="mt-6 border-t border-gray-600 pt-3">
-        <p className="text-sm">{products.length} products total</p>
+        <p className="text-sm">
+          {productSuggestions.length} product suggestions total
+        </p>
       </div>
 
-      {showAddPopup && (
-        <AddProductPopup
-          onClose={() => setShowAddPopup(false)}
-          onSubmit={handleAddProduct}
-        />
-      )}
+      {showAddPopup && <div></div>}
     </AdminLayout>
   );
 };
 
-export default ProductListPage;
+export default ProductSuggestionListPage;
