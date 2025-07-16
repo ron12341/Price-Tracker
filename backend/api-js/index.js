@@ -15,6 +15,9 @@ app.use(express.json());
 const productsRouter = require("./routes/products");
 app.use("/products", productsRouter);
 
+const productSuggestionRouter = require("./routes/productSuggestion");
+app.use("/product-suggestions", productSuggestionRouter);
+
 const authRouter = require("./routes/auth");
 app.use("/auth", authRouter);
 
