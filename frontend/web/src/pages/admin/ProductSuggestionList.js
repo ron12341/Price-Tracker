@@ -23,20 +23,20 @@ const ProductSuggestionListPage = () => {
       return;
     }
 
-    try {
-      await deleteProducts(selectedIds);
-      setProducts((prev) =>
-        prev.filter((item) => !selectedIds.includes(item._id))
-      );
-      setSelectedIds([]);
-    } catch (err) {
-      console.error("Error deleting:", err);
-    }
+    // try {
+    //   await deleteProducts(selectedIds);
+    //   setProducts((prev) =>
+    //     prev.filter((item) => !selectedIds.includes(item._id))
+    //   );
+    //   setSelectedIds([]);
+    // } catch (err) {
+    //   console.error("Error deleting:", err);
+    // }
   };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedIds(products.map((p) => p._id));
+      setSelectedIds(productSuggestions.map((p) => p._id));
     } else {
       setSelectedIds([]);
     }
@@ -54,7 +54,7 @@ const ProductSuggestionListPage = () => {
   }, []);
 
   return (
-    <AdminLayout current="Products">
+    <AdminLayout current="Products Suggestions">
       <div className="flex justify-between items-center mb-6 text-2xl">
         <p>Select collection to change</p>
         <button
@@ -72,8 +72,12 @@ const ProductSuggestionListPage = () => {
           onChange={(e) => setAction(e.target.value)}
           className="bg-transparent text-white border border-gray-500 rounded px-2 py-1"
         >
-          <option value="default">--------</option>
-          <option value="delete">Delete</option>
+          <option className="text-black" value="default">
+            --------
+          </option>
+          <option className="text-black" value="delete">
+            Delete
+          </option>
         </select>
         <button
           onClick={() => action === "delete" && handleDelete()}

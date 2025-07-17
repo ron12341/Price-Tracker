@@ -46,6 +46,7 @@ const ProductListPage = () => {
       );
       setSelectedIds([]);
     } catch (err) {
+      alert(err.response.data.error);
       console.error("Error deleting:", err);
     }
   };
@@ -88,8 +89,12 @@ const ProductListPage = () => {
           onChange={(e) => setAction(e.target.value)}
           className="bg-transparent text-white border border-gray-500 rounded px-2 py-1"
         >
-          <option value="default">--------</option>
-          <option value="delete">Delete</option>
+          <option className="text-black" value="default">
+            --------
+          </option>
+          <option className="text-black" value="delete">
+            Delete
+          </option>
         </select>
         <button
           onClick={() => action === "delete" && handleDelete()}

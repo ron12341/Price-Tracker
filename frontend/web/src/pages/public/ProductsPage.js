@@ -4,8 +4,6 @@ import axios from "axios";
 import Navbar from "./components/Navbar";
 import ProductCard from "./components/ProductCard";
 
-import "./ProductsPage.css";
-
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
 
@@ -23,13 +21,13 @@ const ProductsPage = () => {
   }, []);
 
   return (
-    <div className="products-page">
+    <div className="flex flex-col w-screen min-h-screen bg-[#f2f2f2] font-sans">
       <Navbar />
 
-      <div className="content">
-        <h2>Products</h2>
+      <div className="flex-1 p-5 bg-white rounded-md shadow-md overflow-y-auto">
+        <h2 className="text-3xl font-semibold mb-5">Products</h2>
 
-        <div className="products-grid">
+        <div className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
           {products.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}

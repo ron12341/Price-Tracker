@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./AddProductPopup.css";
 
 const AddProductPopup = ({ onClose, onSubmit }) => {
   const [productName, setProductName] = useState("");
