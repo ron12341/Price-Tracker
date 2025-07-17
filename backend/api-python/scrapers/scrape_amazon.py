@@ -29,7 +29,7 @@ def scrape_amazon(url: str) -> str:
         ]
 
         for price_id in price_ids:
-            price_element = soup.find(id=price_id)
+            price_element = soup.find(id=price_id) or soup.find(class_=price_id)
             if price_element and price_element.text.strip():
                 price = price_element.text.strip()
                 break
