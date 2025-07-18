@@ -1,11 +1,12 @@
 const ProductSuggestion = require("../models/ProductSuggestion");
 
-const addProductSuggestion = async (userId, name, query, stores) => {
+const addProductSuggestion = async (userId, name, query, stores, reason) => {
   const result = await ProductSuggestion.create({
     userId,
     name,
     query,
     stores,
+    reason,
   });
 
   return result;

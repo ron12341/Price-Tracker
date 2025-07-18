@@ -2,14 +2,15 @@ const productSuggestionService = require("../services/productSuggestion");
 
 const addProductSuggestion = async (req, res) => {
   try {
-    const { name, query, stores } = req.body;
+    const { name, query, stores, reason } = req.body;
     const userId = req.user.id;
 
     const result = await productSuggestionService.addProductSuggestion(
       userId,
       name,
       query,
-      stores
+      stores,
+      reason
     );
     return res
       .status(201)
@@ -20,12 +21,9 @@ const addProductSuggestion = async (req, res) => {
   }
 };
 
-const getProductSuggestions = async (req, res) => {
+const getAllProductSuggestions = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const result = await productSuggestionService.getAllProductSuggestions(
-      userId
-    );
+    const result = await productSuggestionService.getAllProductSuggestions();
     return res.json(result);
   } catch (error) {
     console.error("Error getting product suggestions:", error);
@@ -46,6 +44,6 @@ const getPendingProductSuggestions = async (req, res) => {
 
 module.exports = {
   addProductSuggestion,
-  getProductSuggestions,
+  getAllProductSuggestions,
   getPendingProductSuggestions,
 };
