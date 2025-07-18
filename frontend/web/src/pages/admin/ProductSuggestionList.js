@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { fetchProductSuggestions } from "../../services/admin/productSuggestionService";
-import { useLoading } from "../../context/LoadingContext";
 import AdminLayout from "./AdminLayout";
 import { useAuth } from "../../context/AuthContext";
 
@@ -10,18 +9,14 @@ const ProductSuggestionListPage = () => {
   const [action, setAction] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
 
-  const { setIsLoading } = useLoading();
   const { user } = useAuth();
 
   const handleFetch = async () => {
-    // setIsLoading(true);
     try {
       const res = await fetchProductSuggestions(user.token);
       setProductSuggestions(res);
     } catch (err) {
       console.error("Error fetching product suggestions:", err);
-    } finally {
-      // setIsLoading(false);
     }
   };
 

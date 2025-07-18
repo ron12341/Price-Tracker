@@ -6,7 +6,6 @@ import {
   addProduct,
 } from "../../services/admin/productService";
 import { fetchProducts } from "../../services/public/productService";
-import { useLoading } from "../../context/LoadingContext";
 
 const ProductListPage = () => {
   const [products, setProducts] = useState([]);
@@ -14,17 +13,12 @@ const ProductListPage = () => {
   const [action, setAction] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
 
-  const { setIsLoading } = useLoading();
-
   const handleFetchProducts = async () => {
-    // setIsLoading(true);
     try {
       const res = await fetchProducts();
       setProducts(res);
     } catch (err) {
       console.error("Error fetching products:", err);
-    } finally {
-      // setIsLoading(false);
     }
   };
 
