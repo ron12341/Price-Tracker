@@ -8,8 +8,11 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setUser(null);
-    navigate("/");
+    navigate("/"); // Go home first
+    setTimeout(() => {
+      setUser(null); // Then log out
+      localStorage.removeItem("token");
+    }, 100);
   };
   const handleLogin = () => navigate("/auth/login");
 

@@ -10,10 +10,11 @@ const LoginPage = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const { setUser } = useAuth();
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const from = location.state?.from?.pathname || "/";
+  const params = new URLSearchParams(location.search);
+  const redirectTo = params.get("redirect") || "/";
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -25,16 +26,9 @@ const LoginPage = () => {
       const { token, isAdmin } = await login(email, password);
       setUser({ token, isAdmin });
 
-      if (from.startsWith("/admin")) {
-        if (isAdmin) {
-          navigate("/admin");
-        } else {
-          alert("You are not authorized to access this page.");
-          navigate("/");
-        }
-      } else {
-        navigate("/");
-      }
+      console.log(redirectTo);
+
+      navigate(redirectTo, { replace: true });
     } catch (error) {
       setErrorMsg("Invalid email or password.");
     }

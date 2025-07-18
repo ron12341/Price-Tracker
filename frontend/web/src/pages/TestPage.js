@@ -1,12 +1,18 @@
-import { useState } from "react";
-import AddProductSuggestionPopup from "../pages/public/components/AddProductSuggestionPopup";
+const { useLoading } = require("../context/LoadingContext");
 
 const TestPage = () => {
-  const [show, setShow] = useState(false);
+  const { isLoading, setIsLoading } = useLoading();
+
+  const handleClick = () => setIsLoading((prev) => !prev);
   return (
     <div>
-      <button onClick={() => setShow(true)}>Show</button>
-      {show && <AddProductSuggestionPopup onClose={() => setShow(false)} />}
+      <p>Loading? {isLoading ? "Yes" : "No"}</p>
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={handleClick}
+      >
+        Toggle Loading
+      </button>
     </div>
   );
 };

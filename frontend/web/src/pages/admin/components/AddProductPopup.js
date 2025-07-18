@@ -27,12 +27,7 @@ const AddProductPopup = ({ onClose, onSubmit }) => {
 
     // Validate required fields
     while (true) {
-      if (
-        productName === "" ||
-        productQuery === "" ||
-        stores.length === 0 ||
-        imageUrl === ""
-      ) {
+      if (productName === "" || productQuery === "" || stores.length === 0) {
         alert("Please fill in all fields.");
         return;
       }
@@ -110,7 +105,6 @@ const AddProductPopup = ({ onClose, onSubmit }) => {
               placeholder="Image URL"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
-              required
             />
           </div>
 
