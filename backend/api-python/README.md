@@ -42,7 +42,8 @@ Content-Type: application/json
       "storeName": "walmart",
       "url": "https://walmart.ca/..."
     }
-  ]
+  ],
+  "imageUrl": "https://someImageUrl/..."
 }
 ```
 
@@ -61,7 +62,8 @@ Content-Type: application/json
       "url": "https://walmart.ca/...",
       "price": "$999"
     }
-  ]
+  ],
+  "imageUrl": "https://someImageUrl/..."
 }
 ```
 
