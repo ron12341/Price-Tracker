@@ -28,4 +28,4 @@ async def scrape(request: ScrapeRequest):
             "url": store.url
         })
 
-    return {"stores": results, "scrapedAt": str(datetime.datetime.now())}
+    return {"stores": results}

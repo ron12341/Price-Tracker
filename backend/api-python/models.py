@@ -16,4 +16,3 @@ class ScrapeRequest(BaseModel):
 
 class ScrapeResponse(BaseModel):
     stores: List[StoreResponse]
-    scrapedAt: str
