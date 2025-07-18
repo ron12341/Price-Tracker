@@ -6,7 +6,7 @@ import Navbar from "./components/Navbar";
 const ResgisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordErrors, setPasswordErrors] = useState({});
+  const [errorMsgs, setErrorMsgs] = useState({});
 
   const navigate = useNavigate();
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -38,7 +38,7 @@ const ResgisterPage = () => {
     const errors = validatePassword(password);
 
     if (Object.keys(errors).length > 0) {
-      setPasswordErrors(errors);
+      setErrorMsgs(errors);
       return;
     }
 
@@ -46,8 +46,9 @@ const ResgisterPage = () => {
       await register(email, password);
       navigate("/auth/login");
     } catch (error) {
-      alert(error.response.data.error);
-      console.error("Error registering:", error);
+      setErrorMsgs({
+        error: "Error registering user. Please try again later.",
+      });
     }
   };
 
@@ -106,9 +107,9 @@ const ResgisterPage = () => {
             </div>
 
             {/* Password Validation Messages */}
-            {Object.keys(passwordErrors).length > 0 && (
-              <div className="text-red-500 text-sm mb-4 text-left">
-                {Object.values(passwordErrors).map((error, index) => (
+            {Object.keys(errorMsgs).length > 0 && (
+              <div className="text-red-500 text-base mb-4 text-left">
+                {Object.values(errorMsgs).map((error, index) => (
                   <p key={index}>{error}</p>
                 ))}
               </div>
