@@ -50,6 +50,7 @@ router.get("/:id", async (req, res) => {
       const response = await axios.post("http://localhost:8000/scrape", {
         query: cachedProduct.query,
         stores: cachedProduct.stores,
+        imageUrl: cachedProduct.imageUrl,
       });
       const data = response.data;
 
