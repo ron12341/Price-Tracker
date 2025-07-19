@@ -2,7 +2,7 @@ const axios = require("axios");
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
 
-const addProduct = async (name, query, stores) => {
+const addProduct = async (name, query, stores, session) => {
   // Input validation at service level
   if (!name || !query || !stores) {
     throw new Error("Missing required fields");
@@ -22,26 +22,30 @@ const addProduct = async (name, query, stores) => {
         imageUrl: null,
       },
       {
-        timeout: 5000, // Set timeout for scraping service
+        timeout: 5000,
       }
     );
 
-    return await Product.create({
-      name,
-      query,
-      imageUrl: response.data.imageUrl,
-      stores: response.data.stores,
-      scrapedAt: new Date(),
-    });
+    return await Product.create(
+      [
+        {
+          name,
+          query,
+          imageUrl: response.data.imageUrl,
+          stores: response.data.stores,
+          scrapedAt: new Date(),
+        },
+      ],
+      { session }
+    );
   } catch (error) {
-    // Enhance service-level error messages
     if (error.code === "ECONNABORTED") {
       throw new Error("Scraping service timeout");
     }
     if (error.response) {
       throw new Error(`Scraping failed: ${error.response.data.message}`);
     }
-    throw error; // Re-throw other errors
+    throw error;
   }
 };
 

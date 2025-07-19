@@ -46,33 +46,59 @@ const approveProductSuggestion = async (id) => {
 };
 
 const bulkApproveAndCreate = async (ids) => {
-  const suggestions = await ProductSuggestion.find({ _id: { $in: ids } });
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  const createdProducts = await Promise.all(
-    suggestions.map(async (suggestion) => {
-      const product = await productService.addProduct(
-        suggestion.name,
-        suggestion.query,
-        suggestion.stores
-      );
-      return product;
-    })
-  );
+  const errors = [];
+  let createdCount = 0;
 
-  await Promise.all(
-    suggestions.map(async (suggestion) => {
-      await ProductSuggestion.findOneAndUpdate(
-        { _id: suggestion._id },
-        { status: "approved" }
-      );
-      return suggestion;
-    })
-  );
+  try {
+    const suggestions = await ProductSuggestion.find({
+      _id: { $in: ids },
+      // status: "pending",
+    }).session(session);
 
-  return {
-    approvedCount: suggestions.length,
-    createdCount: createdProducts.length,
-  };
+    for (const suggestion of suggestions) {
+      try {
+        const product = await productService.addProduct(
+          suggestion.name,
+          suggestion.query,
+          suggestion.stores,
+          session
+        );
+
+        await ProductSuggestion.updateOne(
+          { _id: suggestion._id },
+          { status: "approved" }
+        ).session(session);
+
+        createdCount++;
+      } catch (err) {
+        errors.push({
+          id: suggestion._id,
+          name: suggestion.name,
+          error: err.message,
+        });
+      }
+    }
+
+    if (createdCount > 0) {
+      await session.commitTransaction();
+    } else {
+      await session.abortTransaction();
+    }
+
+    return {
+      createdCount,
+      approvedCount: createdCount,
+      errors,
+    };
+  } catch (err) {
+    await session.abortTransaction();
+    throw err;
+  } finally {
+    session.endSession();
+  }
 };
 
 module.exports = {

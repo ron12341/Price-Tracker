@@ -54,12 +54,34 @@ const approveProductSuggestion = async (req, res) => {
 };
 
 const bulkApproveProductSuggestions = async (req, res) => {
+  const { ids } = req.body;
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return res.status(400).json({ error: "Invalid or missing 'ids' array" });
+  }
+
   try {
-    const { ids } = req.body;
     const result = await productSuggestionService.bulkApproveAndCreate(ids);
-    return res.json(result);
+
+    if (result.createdCount === 0 && result.errors.length > 0) {
+      return res.status(400).json({
+        error: "All suggestions failed",
+        details: result.errors,
+      });
+    }
+
+    if (result.errors.length > 0) {
+      return res.status(207).json(result);
+    }
+
+    return res.status(200).json(result);
   } catch (error) {
-    console.error("Error bulk approving product suggestions:", error);
+    console.error("Error bulk approving product suggestions:", {
+      ids,
+      error: error.message,
+      stack: error.stack,
+    });
+
     return res.status(500).json({ error: "Internal server error" });
   }
 };
