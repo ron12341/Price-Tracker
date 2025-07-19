@@ -7,4 +7,8 @@ router.use(authMiddleware, isAdmin);
 
 router.get("/", controller.getAllProductSuggestions);
 
+router.post("/:id/approve", controller.approveProductSuggestion);
+
+router.post("/bulk-approve", controller.bulkApproveProductSuggestions);
+
 module.exports = router;

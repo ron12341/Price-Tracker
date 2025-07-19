@@ -3,7 +3,7 @@ const router = express.Router();
 const Product = require("../../models/Product");
 const axios = require("axios");
 
-const MAX_CACHE_TIME = 0; // 6 hour in milliseconds
+const MAX_CACHE_TIME = 2 * 60 * 60 * 1000; // 2 hour in milliseconds
 
 /**
  * @route GET /products

@@ -42,8 +42,32 @@ const getPendingProductSuggestions = async (req, res) => {
   }
 };
 
+const approveProductSuggestion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await productSuggestionService.approveProductSuggestion(id);
+    return res.json(result);
+  } catch (error) {
+    console.error("Error approving product suggestion:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const bulkApproveProductSuggestions = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    const result = await productSuggestionService.bulkApproveAndCreate(ids);
+    return res.json(result);
+  } catch (error) {
+    console.error("Error bulk approving product suggestions:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   addProductSuggestion,
   getAllProductSuggestions,
   getPendingProductSuggestions,
+  approveProductSuggestion,
+  bulkApproveProductSuggestions,
 };
