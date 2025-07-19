@@ -2,14 +2,42 @@ import axios from "axios";
 
 const baseUrl = process.env.REACT_APP_API_URL + "/admin/product-suggestions";
 
-const fetchProductSuggestions = async () => {
-  try {
-    const response = await axios.get(`${baseUrl}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching product suggestions:", error);
-    throw error;
-  }
+const fetchProductSuggestions = async (token) => {
+  const response = await axios.get(`${baseUrl}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
 };
 
-export { fetchProductSuggestions };
+const approveProductSuggestion = async (id, token) => {
+  const response = await axios.post(`${baseUrl}/${id}/approve`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+const bulkApproveProductSuggestions = async (ids, token) => {
+  const response = await axios.post(
+    `${baseUrl}/bulk-approve`,
+    { ids },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export {
+  fetchProductSuggestions,
+  approveProductSuggestion,
+  bulkApproveProductSuggestions,
+};

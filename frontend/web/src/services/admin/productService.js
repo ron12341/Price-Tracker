@@ -4,7 +4,6 @@ const baseUrl = process.env.REACT_APP_API_URL + "/admin/products";
 
 const addProduct = async (name, query, imageUrl, stores) => {
   const token = JSON.parse(localStorage.getItem("user"))?.token;
-  console.log(name, query, imageUrl, stores);
   try {
     const response = await axios.post(
       `${baseUrl}`,
