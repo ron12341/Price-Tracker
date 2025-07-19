@@ -12,4 +12,29 @@ const fetchProductSuggestions = async () => {
   }
 };
 
-export { fetchProductSuggestions };
+const addProductSuggestion = async (name, query, stores, reason) => {
+  const token = JSON.parse(localStorage.getItem("user"))?.token;
+  try {
+    const response = await axios.post(
+      `${baseUrl}`,
+      {
+        name,
+        query,
+        stores,
+        reason,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error adding product suggestion:", error);
+    throw error;
+  }
+};
+
+export { fetchProductSuggestions, addProductSuggestion };
