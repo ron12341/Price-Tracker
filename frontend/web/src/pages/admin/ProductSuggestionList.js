@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { fetchProductSuggestions } from "../../services/admin/productSuggestionService";
+import {
+  fetchProductSuggestions,
+  bulkApproveProductSuggestions,
+} from "../../services/admin/productSuggestionService";
 import AdminLayout from "./AdminLayout";
 import { useAuth } from "../../context/AuthContext";
 
@@ -35,6 +38,24 @@ const ProductSuggestionListPage = () => {
     // } catch (err) {
     //   console.error("Error deleting:", err);
     // }
+  };
+
+  const handleApprove = async () => {
+    if (selectedIds.length === 0) {
+      alert("Select items to delete.");
+      return;
+    }
+
+    try {
+      console.log("Approving:", selectedIds);
+      await bulkApproveProductSuggestions(selectedIds, user.token);
+      setProductSuggestions((prev) =>
+        prev.filter((item) => !selectedIds.includes(item._id))
+      );
+      setSelectedIds([]);
+    } catch (err) {
+      console.error("Error deleting:", err);
+    }
   };
 
   const handleSelectAll = (e) => {
@@ -79,11 +100,20 @@ const ProductSuggestionListPage = () => {
             --------
           </option>
           <option className="text-black" value="delete">
-            Delete
+            delete
+          </option>
+          <option className="text-black" value="approve">
+            approve
           </option>
         </select>
         <button
-          onClick={() => action === "delete" && handleDelete()}
+          onClick={() => {
+            if (action === "delete") {
+              handleDelete();
+            } else if (action === "approve") {
+              handleApprove();
+            }
+          }}
           className="border px-3 py-1 rounded border-gray-400 hover:bg-white hover:text-gray-900 transition"
         >
           Apply

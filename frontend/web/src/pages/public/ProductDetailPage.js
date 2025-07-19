@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+import { useLoading } from "../../context/LoadingContext";
+
 import Narvbar from "./components/Navbar";
 
 const formatDate = (isoString) => {
@@ -24,7 +26,8 @@ const tdClass = "text-left p-3 border-b border-[#cbcbcb]";
 const ProductDetailPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const { isLoading, showLoading, hideLoading } = useLoading();
 
   const sortByPrice = (stores) => {
     return stores.sort((a, b) => a.price - b.price);
@@ -32,6 +35,7 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      showLoading("Fetching product...");
       try {
         const response = await axios.get(
           `http://localhost:5000/products/${id}`
@@ -42,18 +46,19 @@ const ProductDetailPage = () => {
           response.data.stores = sortByPrice(response.data.stores);
         }
         setProduct(response.data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching product:", error);
         setProduct(null);
+      } finally {
+        hideLoading();
       }
     };
 
     fetchProduct();
   }, [id]);
 
-  if (loading) {
-    return <p>Loading...</p>;
+  if (isLoading) {
+    return null;
   }
 
   if (!product) {

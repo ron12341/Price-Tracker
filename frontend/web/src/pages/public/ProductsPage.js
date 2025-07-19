@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLoading } from "../../context/LoadingContext";
 import axios from "axios";
 
 import Navbar from "./components/Navbar";
@@ -10,12 +11,17 @@ const ProductsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
+  const { isLoading, showLoading, hideLoading } = useLoading();
+
   const fetchProducts = async () => {
+    showLoading("Fetching products...");
     try {
       const response = await axios.get("http://localhost:5000/products");
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
+    } finally {
+      hideLoading();
     }
   };
 
@@ -26,6 +32,9 @@ const ProductsPage = () => {
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // If loading, return null
+  if (isLoading) return null;
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-[#f2f2f2] font-sans">

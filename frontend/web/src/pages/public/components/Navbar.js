@@ -18,7 +18,9 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gray-900 text-white px-6 py-4 flex items-center justify-between shadow-md w-full">
-      <div className="text-2xl font-bold tracking-wide">Price Tracker</div>
+      <a href="/" className="text-2xl font-bold tracking-wide">
+        Price Tracker
+      </a>
 
       <div className="flex items-center gap-4">
         {user ? (
