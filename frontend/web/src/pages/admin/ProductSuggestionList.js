@@ -48,7 +48,8 @@ const ProductSuggestionListPage = () => {
 
     try {
       console.log("Approving:", selectedIds);
-      await bulkApproveProductSuggestions(selectedIds, user.token);
+      const res = await bulkApproveProductSuggestions(selectedIds, user.token);
+      console.log(res);
       setProductSuggestions((prev) =>
         prev.filter((item) => !selectedIds.includes(item._id))
       );

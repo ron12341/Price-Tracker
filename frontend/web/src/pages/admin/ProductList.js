@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
-import AdminLayout from "./AdminLayout";
-import AddProductPopup from "./components/AddProductPopup";
 import {
   deleteProducts,
   addProduct,
 } from "../../services/admin/productService";
 import { fetchProducts } from "../../services/public/productService";
+import AdminLayout from "./AdminLayout";
+import ProductCard from "./components/ProductCard";
+import AddProductPopup from "./components/AddProductPopup";
+import UpdateProductPopup from "./components/UpdateProductPopup";
 
 const ProductListPage = () => {
   const [products, setProducts] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [action, setAction] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleFetchProducts = async () => {
     try {
@@ -122,19 +126,16 @@ const ProductListPage = () => {
         </div>
 
         {products.map((product) => (
-          <div
+          <ProductCard
             key={product._id}
-            className="flex items-center px-4 py-3 bg-gray-300 text-black rounded hover:bg-gray-200"
-          >
-            <input
-              type="checkbox"
-              id={product._id}
-              checked={selectedIds.includes(product._id)}
-              onChange={handleCheckbox}
-              className="w-5 h-5 mr-3"
-            />
-            <p>{product.query}</p>
-          </div>
+            product={product}
+            onSelect={handleCheckbox}
+            isSelected={selectedIds.includes(product._id)}
+            onUpdate={() => {
+              setShowUpdatePopup(true);
+              setSelectedProduct(product);
+            }}
+          />
         ))}
       </div>
 
@@ -146,6 +147,14 @@ const ProductListPage = () => {
         <AddProductPopup
           onClose={() => setShowAddPopup(false)}
           onSubmit={handleAddProduct}
+        />
+      )}
+
+      {showUpdatePopup && selectedProduct && (
+        <UpdateProductPopup
+          productToUpdate={selectedProduct}
+          onClose={() => setShowUpdatePopup(false)}
+          onUpdate={handleFetchProducts}
         />
       )}
     </AdminLayout>
