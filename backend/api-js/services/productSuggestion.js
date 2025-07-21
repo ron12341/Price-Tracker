@@ -4,9 +4,15 @@ const mongoose = require("mongoose");
 
 const productService = require("./product");
 
-const addProductSuggestion = async (userId, name, query, stores, reason) => {
+const addProductSuggestion = async (
+  suggestedBy,
+  name,
+  query,
+  stores,
+  reason
+) => {
   const result = await ProductSuggestion.create({
-    userId,
+    suggestedBy,
     name,
     query,
     stores,
@@ -17,8 +23,15 @@ const addProductSuggestion = async (userId, name, query, stores, reason) => {
 };
 
 const getAllProductSuggestions = async () => {
-  const result = await ProductSuggestion.find({});
-  return result;
+  const suggestions = await ProductSuggestion.find()
+    .populate("suggestedBy", "email")
+    .exec();
+
+  if (!suggestions || suggestions.length === 0) {
+    throw new Error("No product suggestions found");
+  }
+
+  return suggestions;
 };
 
 const getPendingProductSuggestions = async () => {
@@ -108,3 +121,5 @@ module.exports = {
   approveProductSuggestion,
   bulkApproveAndCreate,
 };
+
+('{"error":"All suggestions failed","details":[{"id":"687ab1bef825ec7d5765fd90","name":"Corsair K70 RGB PRO Mechanical Gaming Keyboard (Cherry MX Brown Switches, 8,000Hz Hyper-Polling, Durable PBT Double-Shot Keycaps, Magnetic Soft-Touch Palm Rest) QWERTY, NA Layout - Black","error":"Product validation failed: query: Path `query` is required., name: Path `name` is required."}]}');
