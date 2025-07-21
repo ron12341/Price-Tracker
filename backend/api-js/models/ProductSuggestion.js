@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const productSuggestionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  suggestedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   name: { type: String, required: true },
   query: { type: String, required: true },
   stores: [
