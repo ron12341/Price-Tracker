@@ -119,7 +119,9 @@ const updateProductSuggestionAsAdmin = async (id, updates) => {
     { _id: id },
     updates,
     { new: true }
-  );
+  )
+    .populate("suggestedBy", "email")
+    .exec();
 
   if (!suggestion) {
     throw new Error("Product suggestion not found");
