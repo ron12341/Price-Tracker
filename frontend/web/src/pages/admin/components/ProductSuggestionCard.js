@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import StatusDisplay from "./StatusDisplay";
 
 const ProductSuggestionCard = ({ product, onUpdate, isSelected, onSelect }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -20,11 +21,10 @@ const ProductSuggestionCard = ({ product, onUpdate, isSelected, onSelect }) => {
         />
 
         <div className="flex-1 flex justify-between items-center">
-          {isExpanded ? (
-            <p></p>
-          ) : (
+          <div className="flex items-center space-x-3">
             <h3 className="font-medium text-lg text-black">{product.query}</h3>
-          )}
+            <StatusDisplay status={product.status} />
+          </div>
 
           <div className="flex space-x-2">
             <button
@@ -55,18 +55,18 @@ const ProductSuggestionCard = ({ product, onUpdate, isSelected, onSelect }) => {
       {isExpanded && (
         <div className="transition-all duration-300 max-h-100 bg-white overflow-y-auto">
           <div className="p-4 border-t">
-            <div className="space-y-3 text-black">
+            <div className="space-y-2 text-black">
               <div>
                 <p className="text-md text-gray-500">Suggested By</p>
                 <p className="font-medium">{product.suggestedBy.email}</p>
               </div>
               <div>
-                <p className="text-md text-gray-500">Name</p>
-                <p className="font-medium">{product.name}</p>
-              </div>
-              <div>
                 <p className="text-md text-gray-500">Search Query</p>
                 <p className="font-medium">{product.query}</p>
+              </div>
+              <div>
+                <p className="text-md text-gray-500">Name</p>
+                <p className="font-medium">{product.name}</p>
               </div>
               <div>
                 <p className="text-md text-gray-500">Reason</p>
