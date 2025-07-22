@@ -8,7 +8,7 @@ router.use(authMiddleware, isAdmin);
 
 router.post("/", async (req, res) => {
   try {
-    const { name, query, stores } = req.body;
+    const { name, query, stores, imageUrl } = req.body;
 
     // Validate required fields
     if (!name || !query || !stores) {
@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
     const response = await axios.post("http://localhost:8000/scrape", {
       query: query,
       stores: stores,
-      imageUrl: null,
+      imageUrl: imageUrl || null,
     });
 
     // data = { imageUrl, stores }
