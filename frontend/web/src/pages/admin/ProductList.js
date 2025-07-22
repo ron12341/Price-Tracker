@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  deleteProducts,
-  addProduct,
-} from "../../services/admin/productService";
-import { fetchProducts } from "../../services/public/productService";
+import { deleteProducts, addProduct } from "@adminServices/productService";
+import { fetchProducts } from "@publicServices/productService";
 import AdminLayout from "./AdminLayout";
 import ProductCard from "./components/ProductCard";
 import AddProductPopup from "./components/forms/AddProductPopup";
