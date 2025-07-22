@@ -2,15 +2,20 @@ import { useEffect, useState } from "react";
 import {
   fetchProductSuggestions,
   bulkApproveProductSuggestions,
+  updateProductSuggestion,
 } from "../../services/admin/productSuggestionService";
-import AdminLayout from "./AdminLayout";
 import { useAuth } from "../../context/AuthContext";
+import AdminLayout from "./AdminLayout";
+import ProductSuggestionCard from "./components/ProductSuggestionCard";
+import UpdateProductSuggestionPopup from "./components/forms/UpdateProductSuggestionPopup";
 
 const ProductSuggestionListPage = () => {
   const [productSuggestions, setProductSuggestions] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [action, setAction] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const { user } = useAuth();
 
@@ -28,16 +33,6 @@ const ProductSuggestionListPage = () => {
       alert("Select items to delete.");
       return;
     }
-
-    // try {
-    //   await deleteProducts(selectedIds);
-    //   setProducts((prev) =>
-    //     prev.filter((item) => !selectedIds.includes(item._id))
-    //   );
-    //   setSelectedIds([]);
-    // } catch (err) {
-    //   console.error("Error deleting:", err);
-    // }
   };
 
   const handleApprove = async () => {
@@ -56,6 +51,23 @@ const ProductSuggestionListPage = () => {
       setSelectedIds([]);
     } catch (err) {
       console.error("Error deleting:", err);
+    }
+  };
+
+  const handleUpdate = async (updates) => {
+    try {
+      const res = await updateProductSuggestion(
+        selectedProduct._id,
+        updates,
+        user.token
+      );
+      console.log(res);
+      setProductSuggestions((prev) =>
+        prev.map((item) => (item._id === selectedProduct._id ? res : item))
+      );
+    } catch (err) {
+      console.error("Error updating:", err);
+      throw err;
     }
   };
 
@@ -139,19 +151,16 @@ const ProductSuggestionListPage = () => {
         </div>
 
         {productSuggestions.map((product) => (
-          <div
+          <ProductSuggestionCard
             key={product._id}
-            className="flex items-center px-4 py-3 bg-gray-300 text-black rounded hover:bg-gray-200"
-          >
-            <input
-              type="checkbox"
-              id={product._id}
-              checked={selectedIds.includes(product._id)}
-              onChange={handleCheckbox}
-              className="w-5 h-5 mr-3"
-            />
-            <p>{product.query}</p>
-          </div>
+            product={product}
+            onUpdate={() => {
+              setShowUpdatePopup(true);
+              setSelectedProduct(product);
+            }}
+            onSelect={handleCheckbox}
+            isSelected={selectedIds.includes(product._id)}
+          />
         ))}
       </div>
 
@@ -162,6 +171,17 @@ const ProductSuggestionListPage = () => {
       </div>
 
       {showAddPopup && <div></div>}
+
+      {showUpdatePopup && selectedProduct && (
+        <UpdateProductSuggestionPopup
+          productToUpdate={selectedProduct}
+          onClose={() => {
+            setShowUpdatePopup(false);
+            setSelectedProduct(null);
+          }}
+          onSubmit={handleUpdate}
+        />
+      )}
     </AdminLayout>
   );
 };

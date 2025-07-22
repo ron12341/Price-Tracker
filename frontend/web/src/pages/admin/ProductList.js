@@ -6,8 +6,8 @@ import {
 import { fetchProducts } from "../../services/public/productService";
 import AdminLayout from "./AdminLayout";
 import ProductCard from "./components/ProductCard";
-import AddProductPopup from "./components/AddProductPopup";
-import UpdateProductPopup from "./components/UpdateProductPopup";
+import AddProductPopup from "./components/forms/AddProductPopup";
+import UpdateProductPopup from "./components/forms/UpdateProductPopup";
 
 const ProductListPage = () => {
   const [products, setProducts] = useState([]);
@@ -154,7 +154,7 @@ const ProductListPage = () => {
         <UpdateProductPopup
           productToUpdate={selectedProduct}
           onClose={() => setShowUpdatePopup(false)}
-          onUpdate={handleFetchProducts}
+          onUpdate={console.log("Updated:", selectedProduct)}
         />
       )}
     </AdminLayout>
