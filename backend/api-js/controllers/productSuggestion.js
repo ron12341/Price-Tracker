@@ -1,3 +1,4 @@
+const { listeners } = require("../models/ProductSuggestion");
 const productSuggestionService = require("../services/productSuggestion");
 
 const addProductSuggestion = async (req, res) => {
@@ -24,7 +25,7 @@ const addProductSuggestion = async (req, res) => {
 const getAllProductSuggestions = async (req, res) => {
   try {
     const result = await productSuggestionService.getAllProductSuggestions();
-    return res.json(result);
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Error getting product suggestions:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -35,7 +36,7 @@ const getPendingProductSuggestions = async (req, res) => {
   try {
     const result =
       await productSuggestionService.getPendingProductSuggestions();
-    return res.json(result);
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Error getting pending product suggestions:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -76,12 +77,34 @@ const bulkApproveProductSuggestions = async (req, res) => {
 
     return res.status(200).json(result);
   } catch (error) {
-    console.error("Error bulk approving product suggestions:", {
-      ids,
-      error: error.message,
-      stack: error.stack,
-    });
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 
+const updateProductSuggestion = async (req, res) => {
+  const { id } = req.params;
+  const { name, query, stores, reason } = req.body;
+  const user = req.user;
+
+  try {
+    let updated;
+
+    if (user.isAdmin) {
+      updated = await productSuggestionService.updateProductSuggestionAsAdmin(
+        id,
+        { name, query, stores, reason }
+      );
+    } else {
+      updated = await productSuggestionService.updateProductSuggestionAsOwner(
+        id,
+        { name, query, stores, reason },
+        user.id
+      );
+    }
+
+    return res.status(200).json(updated);
+  } catch (error) {
+    console.error("Error updating product suggestion:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -92,4 +115,5 @@ module.exports = {
   getPendingProductSuggestions,
   approveProductSuggestion,
   bulkApproveProductSuggestions,
+  updateProductSuggestion,
 };

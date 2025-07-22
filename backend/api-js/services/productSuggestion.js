@@ -114,12 +114,52 @@ const bulkApproveAndCreate = async (ids) => {
   }
 };
 
+const updateProductSuggestionAsAdmin = async (id, updates) => {
+  const suggestion = await ProductSuggestion.findOneAndUpdate(
+    { _id: id },
+    updates,
+    { new: true }
+  );
+
+  if (!suggestion) {
+    throw new Error("Product suggestion not found");
+  }
+
+  return suggestion;
+};
+
+const updateProductSuggestionAsOwner = async (id, updates, userId) => {
+  const suggestion = await ProductSuggestion.findById(id);
+
+  if (!suggestion) {
+    throw new Error("Product suggestion not found");
+  }
+
+  if (suggestion.suggestedBy !== userId) {
+    throw new Error("You are not authorized to update this product suggestion");
+  }
+
+  const allowedUpdates = ["name", "query", "stores", "reason"];
+  for (const key of Object.keys(updates)) {
+    if (!allowedUpdates.includes(key)) {
+      throw new Error(`Field '${key}' is not allowed to update`);
+    }
+  }
+
+  const updatedSuggestion = await ProductSuggestion.findOneAndUpdate(
+    { _id: id },
+    updates
+  );
+
+  return updatedSuggestion;
+};
+
 module.exports = {
   addProductSuggestion,
   getAllProductSuggestions,
   getPendingProductSuggestions,
   approveProductSuggestion,
   bulkApproveAndCreate,
+  updateProductSuggestionAsAdmin,
+  updateProductSuggestionAsOwner,
 };
-
-('{"error":"All suggestions failed","details":[{"id":"687ab1bef825ec7d5765fd90","name":"Corsair K70 RGB PRO Mechanical Gaming Keyboard (Cherry MX Brown Switches, 8,000Hz Hyper-Polling, Durable PBT Double-Shot Keycaps, Magnetic Soft-Touch Palm Rest) QWERTY, NA Layout - Black","error":"Product validation failed: query: Path `query` is required., name: Path `name` is required."}]}');

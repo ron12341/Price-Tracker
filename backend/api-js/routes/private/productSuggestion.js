@@ -11,4 +11,6 @@ router.post("/:id/approve", controller.approveProductSuggestion);
 
 router.post("/bulk-approve", controller.bulkApproveProductSuggestions);
 
+router.put("/:id", controller.updateProductSuggestion);
+
 module.exports = router;
