@@ -36,8 +36,20 @@ const bulkApproveProductSuggestions = async (ids, token) => {
   return response.data;
 };
 
+const updateProductSuggestion = async (id, updates, token) => {
+  console.log(updates);
+  const response = await axios.put(`${baseUrl}/${id}`, updates, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
 export {
   fetchProductSuggestions,
   approveProductSuggestion,
   bulkApproveProductSuggestions,
+  updateProductSuggestion,
 };
