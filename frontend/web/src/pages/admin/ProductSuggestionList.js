@@ -3,6 +3,7 @@ import {
   fetchProductSuggestions,
   bulkApproveProductSuggestions,
   updateProductSuggestion,
+  bulkDeleteProductSuggestions,
 } from "@adminServices/productSuggestionService";
 import { useAuth } from "@context/AuthContext";
 import AdminLayout from "./AdminLayout";
@@ -38,6 +39,16 @@ const ProductSuggestionListPage = () => {
       alert("Select items to delete.");
       return;
     }
+
+    try {
+      await bulkDeleteProductSuggestions(selectedIds, user.token);
+      setProductSuggestions((prev) =>
+        prev.filter((item) => !selectedIds.includes(item._id))
+      );
+      setSelectedIds([]);
+    } catch (err) {
+      console.error("Error deleting:", err);
+    }
   };
 
   const handleApprove = async () => {
@@ -49,13 +60,16 @@ const ProductSuggestionListPage = () => {
     try {
       console.log("Approving:", selectedIds);
       const res = await bulkApproveProductSuggestions(selectedIds, user.token);
-      console.log(res);
-      setProductSuggestions((prev) =>
-        prev.filter((item) => !selectedIds.includes(item._id))
-      );
+      handleFetch();
       setSelectedIds([]);
     } catch (err) {
       console.error("Error deleting:", err);
+      let errMsg = "";
+      err.response.data.details.map(
+        (detail) =>
+          (errMsg += detail.error.toUpperCase() + ": " + detail.query + "\n\n")
+      );
+      alert(errMsg);
     }
   };
 
@@ -164,21 +178,25 @@ const ProductSuggestionListPage = () => {
           <p>Select All</p>
         </div>
 
-        {/* Product Suggestion Cards */}
-        {filteredProductSuggestions.map((product) => (
-          <ProductSuggestionCard
-            key={product._id}
-            product={product}
-            onUpdate={() => {
-              setShowUpdatePopup(true);
-              setSelectedProduct(product);
-            }}
-            onSelect={handleCheckbox}
-            isSelected={selectedIds.includes(product._id)}
-          />
-        ))}
+        {filteredProductSuggestions.length === 0 ? (
+          <p className="text-center">No product suggestions found.</p>
+        ) : (
+          <>
+            {filteredProductSuggestions.map((product) => (
+              <ProductSuggestionCard
+                key={product._id}
+                product={product}
+                onUpdate={() => {
+                  setShowUpdatePopup(true);
+                  setSelectedProduct(product);
+                }}
+                onSelect={handleCheckbox}
+                isSelected={selectedIds.includes(product._id)}
+              />
+            ))}
+          </>
+        )}
       </div>
-
       <div className="mt-6 border-t border-gray-600 pt-3">
         <p className="text-sm">
           {filteredProductSuggestions.length} product suggestions total

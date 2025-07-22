@@ -47,9 +47,24 @@ const updateProductSuggestion = async (id, updates, token) => {
   return response.data;
 };
 
+const bulkDeleteProductSuggestions = async (ids, token) => {
+  const response = await axios.post(
+    `${baseUrl}/bulk-delete`,
+    { ids },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
 export {
   fetchProductSuggestions,
   approveProductSuggestion,
   bulkApproveProductSuggestions,
   updateProductSuggestion,
+  bulkDeleteProductSuggestions,
 };

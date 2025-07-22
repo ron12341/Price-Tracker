@@ -109,6 +109,18 @@ const updateProductSuggestion = async (req, res) => {
   }
 };
 
+const bulkDeleteProductSuggestions = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    const result = await productSuggestionService.bulkDeleteProductSuggestions(
+      ids
+    );
+    return res.status(200).json(result);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   addProductSuggestion,
   getAllProductSuggestions,
@@ -116,4 +128,5 @@ module.exports = {
   approveProductSuggestion,
   bulkApproveProductSuggestions,
   updateProductSuggestion,
+  bulkDeleteProductSuggestions,
 };

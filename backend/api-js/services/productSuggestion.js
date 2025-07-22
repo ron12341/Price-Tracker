@@ -23,15 +23,15 @@ const addProductSuggestion = async (
 };
 
 const getAllProductSuggestions = async () => {
-  const suggestions = await ProductSuggestion.find()
-    .populate("suggestedBy", "email")
-    .exec();
+  try {
+    const suggestions = await ProductSuggestion.find()
+      .populate("suggestedBy", "email")
+      .exec();
 
-  if (!suggestions || suggestions.length === 0) {
-    throw new Error("No product suggestions found");
+    return suggestions;
+  } catch (error) {
+    throw new Error("Failed to fetch product suggestions");
   }
-
-  return suggestions;
 };
 
 const getPendingProductSuggestions = async () => {
@@ -89,7 +89,7 @@ const bulkApproveAndCreate = async (ids) => {
       } catch (err) {
         errors.push({
           id: suggestion._id,
-          name: suggestion.name,
+          query: suggestion.query,
           error: err.message,
         });
       }
@@ -156,6 +156,27 @@ const updateProductSuggestionAsOwner = async (id, updates, userId) => {
   return updatedSuggestion;
 };
 
+const deleteProductSuggestionAsOwner = async (id, userId) => {
+  const suggestion = await ProductSuggestion.findById(id);
+
+  if (!suggestion) {
+    throw new Error("Product suggestion not found");
+  }
+
+  if (suggestion.suggestedBy !== userId) {
+    throw new Error("You are not authorized to delete this product suggestion");
+  }
+
+  const result = await ProductSuggestion.deleteOne({ _id: id });
+  return result;
+};
+
+// ADMIN ONLY
+const bulkDeleteProductSuggestions = async (ids) => {
+  const result = await ProductSuggestion.deleteMany({ _id: { $in: ids } });
+  return result;
+};
+
 module.exports = {
   addProductSuggestion,
   getAllProductSuggestions,
@@ -164,4 +185,6 @@ module.exports = {
   bulkApproveAndCreate,
   updateProductSuggestionAsAdmin,
   updateProductSuggestionAsOwner,
+  deleteProductSuggestionAsOwner,
+  bulkDeleteProductSuggestions,
 };

@@ -13,4 +13,6 @@ router.post("/bulk-approve", controller.bulkApproveProductSuggestions);
 
 router.put("/:id", controller.updateProductSuggestion);
 
+router.post("/bulk-delete", controller.bulkDeleteProductSuggestions);
+
 module.exports = router;
