@@ -3,21 +3,26 @@ import {
   fetchProductSuggestions,
   bulkApproveProductSuggestions,
   updateProductSuggestion,
-} from "../../services/admin/productSuggestionService";
-import { useAuth } from "../../context/AuthContext";
+} from "@adminServices/productSuggestionService";
+import { useAuth } from "@context/AuthContext";
 import AdminLayout from "./AdminLayout";
 import ProductSuggestionCard from "./components/ProductSuggestionCard";
 import UpdateProductSuggestionPopup from "./components/forms/UpdateProductSuggestionPopup";
+import ProductSuggestionFilter from "./components/ProductSuggestionFilter";
 
 const ProductSuggestionListPage = () => {
+  const { user } = useAuth();
+
+  // State management
   const [productSuggestions, setProductSuggestions] = useState([]);
+  const [filteredProductSuggestions, setFilteredProductSuggestions] = useState(
+    []
+  );
   const [selectedIds, setSelectedIds] = useState([]);
   const [action, setAction] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [showUpdatePopup, setShowUpdatePopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-
-  const { user } = useAuth();
 
   const handleFetch = async () => {
     try {
@@ -86,6 +91,7 @@ const ProductSuggestionListPage = () => {
     );
   };
 
+  // Fetch suggestions
   useEffect(() => {
     handleFetch();
   }, []);
@@ -102,6 +108,13 @@ const ProductSuggestionListPage = () => {
         </button>
       </div>
 
+      {/* Filter */}
+      <ProductSuggestionFilter
+        productSuggestions={productSuggestions}
+        setProductSuggestions={setFilteredProductSuggestions}
+      />
+
+      {/* Action Bar */}
       <div className="flex items-center gap-3 mb-6 text-sm">
         <p>Action:</p>
         <select
@@ -132,17 +145,18 @@ const ProductSuggestionListPage = () => {
           Apply
         </button>
         <p>
-          {selectedIds.length} of {productSuggestions.length} selected
+          {selectedIds.length} of {filteredProductSuggestions.length} selected
         </p>
       </div>
 
+      {/* Product Suggestion List */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center bg-cyan-800 px-4 py-2 text-white font-bold rounded">
           <input
             type="checkbox"
             checked={
-              productSuggestions.length > 0 &&
-              selectedIds.length === productSuggestions.length
+              filteredProductSuggestions.length > 0 &&
+              selectedIds.length === filteredProductSuggestions.length
             }
             onChange={handleSelectAll}
             className="w-5 h-5 mr-3"
@@ -150,7 +164,8 @@ const ProductSuggestionListPage = () => {
           <p>Select All</p>
         </div>
 
-        {productSuggestions.map((product) => (
+        {/* Product Suggestion Cards */}
+        {filteredProductSuggestions.map((product) => (
           <ProductSuggestionCard
             key={product._id}
             product={product}
@@ -166,7 +181,7 @@ const ProductSuggestionListPage = () => {
 
       <div className="mt-6 border-t border-gray-600 pt-3">
         <p className="text-sm">
-          {productSuggestions.length} product suggestions total
+          {filteredProductSuggestions.length} product suggestions total
         </p>
       </div>
 
