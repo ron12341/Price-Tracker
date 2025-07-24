@@ -6,16 +6,8 @@ const addProductSuggestion = async (req, res) => {
     const { name, query, stores, reason } = req.body;
     const userId = req.user.id;
 
-    const result = await productSuggestionService.addProductSuggestion(
-      userId,
-      name,
-      query,
-      stores,
-      reason
-    );
-    return res
-      .status(201)
-      .json({ message: "Product suggestion added", data: result });
+    const result = await productSuggestionService.addProductSuggestion(userId, name, query, stores, reason);
+    return res.status(201).json({ message: "Product suggestion added", data: result });
   } catch (error) {
     console.error("Error adding product suggestion:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -35,9 +27,7 @@ const getAllProductSuggestions = async (req, res) => {
 const getMyProductSuggestions = async (req, res) => {
   try {
     const userId = req.user.id;
-    const result = await productSuggestionService.getUserProductSuggestions(
-      userId
-    );
+    const result = await productSuggestionService.getUserProductSuggestions(userId);
 
     return res.status(200).json(result);
   } catch (error) {
@@ -46,10 +36,26 @@ const getMyProductSuggestions = async (req, res) => {
   }
 };
 
+const getEditableProductSuggestion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const result = await productSuggestionService.getEditableProductSuggestion(id, userId);
+    return res.status(200).json(result);
+  } catch (error) {
+    if (error.message === "Product suggestion not found") {
+      return res.status(404).json({ error: error.message });
+    }
+    if (error.message === "Product suggestion is not editable") {
+      return res.status(403).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const getPendingProductSuggestions = async (req, res) => {
   try {
-    const result =
-      await productSuggestionService.getPendingProductSuggestions();
+    const result = await productSuggestionService.getPendingProductSuggestions();
     return res.status(200).json(result);
   } catch (error) {
     console.error("Error getting pending product suggestions:", error);
@@ -104,10 +110,7 @@ const updateProductSuggestion = async (req, res) => {
     let updated;
 
     if (user.isAdmin) {
-      updated = await productSuggestionService.updateProductSuggestionAsAdmin(
-        id,
-        { name, query, stores, reason }
-      );
+      updated = await productSuggestionService.updateProductSuggestionAsAdmin(id, { name, query, stores, reason });
     } else {
       updated = await productSuggestionService.updateProductSuggestionAsOwner(
         id,
@@ -118,6 +121,10 @@ const updateProductSuggestion = async (req, res) => {
 
     return res.status(200).json(updated);
   } catch (error) {
+    if (error.message === "Product suggestion not found") {
+      return res.status(404).json({ error: error.message });
+    }
+
     console.error("Error updating product suggestion:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -126,9 +133,7 @@ const updateProductSuggestion = async (req, res) => {
 const bulkDeleteProductSuggestions = async (req, res) => {
   try {
     const { ids } = req.body;
-    const result = await productSuggestionService.bulkDeleteProductSuggestions(
-      ids
-    );
+    const result = await productSuggestionService.bulkDeleteProductSuggestions(ids);
     return res.status(200).json(result);
   } catch (err) {
     return res.status(500).json({ error: err.message });
@@ -139,6 +144,7 @@ module.exports = {
   addProductSuggestion,
   getAllProductSuggestions,
   getMyProductSuggestions,
+  getEditableProductSuggestion,
   getPendingProductSuggestions,
   approveProductSuggestion,
   bulkApproveProductSuggestions,

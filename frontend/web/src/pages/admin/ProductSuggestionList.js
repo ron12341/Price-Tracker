@@ -16,9 +16,7 @@ const ProductSuggestionListPage = () => {
 
   // State management
   const [productSuggestions, setProductSuggestions] = useState([]);
-  const [filteredProductSuggestions, setFilteredProductSuggestions] = useState(
-    []
-  );
+  const [filteredProductSuggestions, setFilteredProductSuggestions] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [action, setAction] = useState("");
   const [showAddPopup, setShowAddPopup] = useState(false);
@@ -42,9 +40,7 @@ const ProductSuggestionListPage = () => {
 
     try {
       await bulkDeleteProductSuggestions(selectedIds, user.token);
-      setProductSuggestions((prev) =>
-        prev.filter((item) => !selectedIds.includes(item._id))
-      );
+      setProductSuggestions((prev) => prev.filter((item) => !selectedIds.includes(item._id)));
       setSelectedIds([]);
     } catch (err) {
       console.error("Error deleting:", err);
@@ -65,25 +61,16 @@ const ProductSuggestionListPage = () => {
     } catch (err) {
       console.error("Error deleting:", err);
       let errMsg = "";
-      err.response.data.details.map(
-        (detail) =>
-          (errMsg += detail.error.toUpperCase() + ": " + detail.query + "\n\n")
-      );
+      err.response.data.details.map((detail) => (errMsg += detail.error.toUpperCase() + ": " + detail.query + "\n\n"));
       alert(errMsg);
     }
   };
 
   const handleUpdate = async (updates) => {
     try {
-      const res = await updateProductSuggestion(
-        selectedProduct._id,
-        updates,
-        user.token
-      );
+      const res = await updateProductSuggestion(selectedProduct._id, updates, user.token);
       console.log(res);
-      setProductSuggestions((prev) =>
-        prev.map((item) => (item._id === selectedProduct._id ? res : item))
-      );
+      setProductSuggestions((prev) => prev.map((item) => (item._id === selectedProduct._id ? res : item)));
     } catch (err) {
       console.error("Error updating:", err);
       throw err;
@@ -100,9 +87,7 @@ const ProductSuggestionListPage = () => {
 
   const handleCheckbox = (e) => {
     const id = e.target.id;
-    setSelectedIds((prev) =>
-      e.target.checked ? [...prev, id] : prev.filter((x) => x !== id)
-    );
+    setSelectedIds((prev) => (e.target.checked ? [...prev, id] : prev.filter((x) => x !== id)));
   };
 
   // Fetch suggestions
@@ -168,10 +153,7 @@ const ProductSuggestionListPage = () => {
         <div className="flex items-center bg-cyan-800 px-4 py-2 text-white font-bold rounded">
           <input
             type="checkbox"
-            checked={
-              filteredProductSuggestions.length > 0 &&
-              selectedIds.length === filteredProductSuggestions.length
-            }
+            checked={filteredProductSuggestions.length > 0 && selectedIds.length === filteredProductSuggestions.length}
             onChange={handleSelectAll}
             className="w-5 h-5 mr-3"
           />
@@ -198,9 +180,7 @@ const ProductSuggestionListPage = () => {
         )}
       </div>
       <div className="mt-6 border-t border-gray-600 pt-3">
-        <p className="text-sm">
-          {filteredProductSuggestions.length} product suggestions total
-        </p>
+        <p className="text-sm">{filteredProductSuggestions.length} product suggestions total</p>
       </div>
 
       {showAddPopup && <div></div>}

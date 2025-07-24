@@ -1,12 +1,14 @@
 import { useState } from "react";
 
-const ProductSuggestionForm = ({ onSubmit }) => {
-  const [form, setForm] = useState({
-    name: "",
-    query: "",
-    reason: "",
-    stores: [{ storeName: "", url: "" }],
-  });
+const ProductSuggestionForm = ({ onSubmit, suggestion }) => {
+  const [form, setForm] = useState(
+    suggestion || {
+      name: "",
+      query: "",
+      reason: "",
+      stores: [{ storeName: "", url: "" }],
+    }
+  );
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -63,22 +65,15 @@ const ProductSuggestionForm = ({ onSubmit }) => {
       </div>
 
       <div>
-        <label className="block font-medium mb-2">
-          Where can we find this product?
-        </label>
+        <label className="block font-medium mb-2">Where can we find this product?</label>
         {form.stores.map((store, index) => (
-          <div
-            key={index}
-            className="flex flex-col sm:flex-row gap-2 items-start sm:items-center mb-2"
-          >
+          <div key={index} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center mb-2">
             <input
               type="text"
               className="flex-1 px-4 py-2 rounded-md border border-gray-300"
               placeholder="Store Name"
               value={store.storeName}
-              onChange={(e) =>
-                handleStoreChange(index, "storeName", e.target.value)
-              }
+              onChange={(e) => handleStoreChange(index, "storeName", e.target.value)}
             />
             <input
               type="text"
@@ -96,19 +91,13 @@ const ProductSuggestionForm = ({ onSubmit }) => {
             </button>
           </div>
         ))}
-        <button
-          type="button"
-          onClick={addStore}
-          className="text-blue-600 mt-1 hover:underline font-medium"
-        >
+        <button type="button" onClick={addStore} className="text-blue-600 mt-1 hover:underline font-medium">
           + Add another store
         </button>
       </div>
 
       <div>
-        <label className="block font-medium mb-1">
-          Why are you suggesting this?
-        </label>
+        <label className="block font-medium mb-1">Why are you suggesting this?</label>
         <textarea
           name="reason"
           value={form.reason}
@@ -119,10 +108,7 @@ const ProductSuggestionForm = ({ onSubmit }) => {
         />
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
-      >
+      <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700">
         Submit Suggestion
       </button>
     </form>

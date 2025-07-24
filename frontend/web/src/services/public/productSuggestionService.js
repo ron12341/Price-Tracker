@@ -12,6 +12,36 @@ const fetchProductSuggestions = async () => {
   }
 };
 
+const getMyProductSuggestions = async (token) => {
+  try {
+    const response = await axios.get(`${baseUrl}/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching my product suggestions:", error);
+    throw error;
+  }
+};
+
+const getEditableProductSuggestion = async (id, token) => {
+  try {
+    const response = await axios.get(`${baseUrl}/${id}/editable`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching editable product suggestion:", error);
+    throw error;
+  }
+};
+
 const addProductSuggestion = async (name, query, stores, reason) => {
   const token = JSON.parse(localStorage.getItem("user"))?.token;
   try {
@@ -37,9 +67,9 @@ const addProductSuggestion = async (name, query, stores, reason) => {
   }
 };
 
-const getMyProductSuggestions = async (token) => {
+const updateProductSuggestion = async (updates, id, token) => {
   try {
-    const response = await axios.get(`${baseUrl}/me`, {
+    const response = await axios.put(`${baseUrl}/${id}`, updates, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -47,7 +77,7 @@ const getMyProductSuggestions = async (token) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error fetching my product suggestions:", error);
+    console.error("Error updating product suggestion:", error);
     throw error;
   }
 };
@@ -56,4 +86,6 @@ export {
   fetchProductSuggestions,
   addProductSuggestion,
   getMyProductSuggestions,
+  getEditableProductSuggestion,
+  updateProductSuggestion,
 };

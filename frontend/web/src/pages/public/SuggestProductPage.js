@@ -32,9 +32,7 @@ const SuggestProductPage = () => {
       <Navbar />
 
       <div className="flex-1 p-5 bg-white rounded-md shadow-md overflow-y-auto">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Suggest a Product
-        </h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Suggest a Product</h1>
 
         <div className="max-w-[600px] w-full mx-auto">
           {submitted ? (

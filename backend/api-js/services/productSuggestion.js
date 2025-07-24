@@ -4,13 +4,7 @@ const mongoose = require("mongoose");
 
 const productService = require("./product");
 
-const addProductSuggestion = async (
-  suggestedBy,
-  name,
-  query,
-  stores,
-  reason
-) => {
+const addProductSuggestion = async (suggestedBy, name, query, stores, reason) => {
   const result = await ProductSuggestion.create({
     suggestedBy,
     name,
@@ -24,9 +18,7 @@ const addProductSuggestion = async (
 
 const getAllProductSuggestions = async () => {
   try {
-    const suggestions = await ProductSuggestion.find()
-      .populate("suggestedBy", "email")
-      .exec();
+    const suggestions = await ProductSuggestion.find().populate("suggestedBy", "email").exec();
 
     return suggestions;
   } catch (error) {
@@ -39,16 +31,30 @@ const getUserProductSuggestions = async (userId) => {
   return result;
 };
 
+const getEditableProductSuggestion = async (id, userId) => {
+  const result = await ProductSuggestion.findOne({
+    _id: id,
+    suggestedBy: userId,
+  });
+
+  if (!result) {
+    throw new Error("Product suggestion not found");
+  }
+
+  if (result.status !== "pending") {
+    throw new Error("Product suggestion is not editable");
+  }
+
+  return result;
+};
+
 const getPendingProductSuggestions = async () => {
   const result = await ProductSuggestion.find({ status: "pending" });
   return result;
 };
 
 const approveProductSuggestion = async (id) => {
-  const result = await ProductSuggestion.findOneAndUpdate(
-    { _id: id },
-    { status: "approved" }
-  );
+  const result = await ProductSuggestion.findOneAndUpdate({ _id: id }, { status: "approved" });
 
   if (!result) {
     throw new Error("Product suggestion not found");
@@ -78,17 +84,9 @@ const bulkApproveAndCreate = async (ids) => {
 
     for (const suggestion of suggestions) {
       try {
-        const product = await productService.addProduct(
-          suggestion.name,
-          suggestion.query,
-          suggestion.stores,
-          session
-        );
+        const product = await productService.addProduct(suggestion.name, suggestion.query, suggestion.stores, session);
 
-        await ProductSuggestion.updateOne(
-          { _id: suggestion._id },
-          { status: "approved" }
-        ).session(session);
+        await ProductSuggestion.updateOne({ _id: suggestion._id }, { status: "approved" }).session(session);
 
         createdCount++;
       } catch (err) {
@@ -120,11 +118,7 @@ const bulkApproveAndCreate = async (ids) => {
 };
 
 const updateProductSuggestionAsAdmin = async (id, updates) => {
-  const suggestion = await ProductSuggestion.findOneAndUpdate(
-    { _id: id },
-    updates,
-    { new: true }
-  )
+  const suggestion = await ProductSuggestion.findOneAndUpdate({ _id: id }, updates, { new: true })
     .populate("suggestedBy", "email")
     .exec();
 
@@ -136,14 +130,10 @@ const updateProductSuggestionAsAdmin = async (id, updates) => {
 };
 
 const updateProductSuggestionAsOwner = async (id, updates, userId) => {
-  const suggestion = await ProductSuggestion.findById(id);
+  const suggestion = await ProductSuggestion.findOne({ _id: id, suggestedBy: userId });
 
   if (!suggestion) {
     throw new Error("Product suggestion not found");
-  }
-
-  if (suggestion.suggestedBy !== userId) {
-    throw new Error("You are not authorized to update this product suggestion");
   }
 
   const allowedUpdates = ["name", "query", "stores", "reason"];
@@ -153,10 +143,7 @@ const updateProductSuggestionAsOwner = async (id, updates, userId) => {
     }
   }
 
-  const updatedSuggestion = await ProductSuggestion.findOneAndUpdate(
-    { _id: id },
-    updates
-  );
+  const updatedSuggestion = await ProductSuggestion.findOneAndUpdate({ _id: id }, updates);
 
   return updatedSuggestion;
 };
@@ -187,6 +174,7 @@ module.exports = {
   getAllProductSuggestions,
   getUserProductSuggestions,
   getPendingProductSuggestions,
+  getEditableProductSuggestion,
   approveProductSuggestion,
   bulkApproveAndCreate,
   updateProductSuggestionAsAdmin,
