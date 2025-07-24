@@ -8,18 +8,23 @@ import ProductSuggestionForm from "./forms/ProductSuggestionForm";
 const SuggestProductPage = () => {
   const [submitted, setSubmitted] = useState(false);
 
-  const { user } = useAuth();
+  const { user, isAuthLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      navigate("/auth/login?redirect=/suggest-product");
+    if (!isAuthLoading && !user) {
+      navigate("/auth/login?redirect=/suggest-product", { replace: true });
     }
   }, [user, navigate, submitted]);
 
-  const handleSubmit = (productName, productQuery, stores, reason) => {
-    addProductSuggestion(productName, productQuery, stores, reason);
-    setSubmitted(true);
+  const handleSubmit = async (productName, productQuery, stores, reason) => {
+    try {
+      await addProductSuggestion(productName, productQuery, stores, reason);
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error adding product suggestion:", error);
+      alert(error.response.data.error);
+    }
   };
 
   return (

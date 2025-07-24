@@ -32,6 +32,20 @@ const getAllProductSuggestions = async (req, res) => {
   }
 };
 
+const getMyProductSuggestions = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const result = await productSuggestionService.getUserProductSuggestions(
+      userId
+    );
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Error getting user product suggestions:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const getPendingProductSuggestions = async (req, res) => {
   try {
     const result =
@@ -124,6 +138,7 @@ const bulkDeleteProductSuggestions = async (req, res) => {
 module.exports = {
   addProductSuggestion,
   getAllProductSuggestions,
+  getMyProductSuggestions,
   getPendingProductSuggestions,
   approveProductSuggestion,
   bulkApproveProductSuggestions,

@@ -9,4 +9,6 @@ router.post("/", productSuggestionController.addProductSuggestion);
 
 router.put("/:id", productSuggestionController.updateProductSuggestion);
 
+router.get("/me", productSuggestionController.getMyProductSuggestions);
+
 module.exports = router;

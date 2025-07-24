@@ -34,6 +34,11 @@ const getAllProductSuggestions = async () => {
   }
 };
 
+const getUserProductSuggestions = async (userId) => {
+  const result = await ProductSuggestion.find({ suggestedBy: userId });
+  return result;
+};
+
 const getPendingProductSuggestions = async () => {
   const result = await ProductSuggestion.find({ status: "pending" });
   return result;
@@ -180,6 +185,7 @@ const bulkDeleteProductSuggestions = async (ids) => {
 module.exports = {
   addProductSuggestion,
   getAllProductSuggestions,
+  getUserProductSuggestions,
   getPendingProductSuggestions,
   approveProductSuggestion,
   bulkApproveAndCreate,

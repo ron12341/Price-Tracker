@@ -37,4 +37,23 @@ const addProductSuggestion = async (name, query, stores, reason) => {
   }
 };
 
-export { fetchProductSuggestions, addProductSuggestion };
+const getMyProductSuggestions = async (token) => {
+  try {
+    const response = await axios.get(`${baseUrl}/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching my product suggestions:", error);
+    throw error;
+  }
+};
+
+export {
+  fetchProductSuggestions,
+  addProductSuggestion,
+  getMyProductSuggestions,
+};

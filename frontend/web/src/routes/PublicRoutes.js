@@ -3,6 +3,7 @@ import HomePage from "../pages/public/HomePage";
 import ProductsPage from "../pages/public/ProductsPage";
 import ProductDetailPage from "../pages/public/ProductDetailPage";
 import SuggestProductPage from "../pages/public/SuggestProductPage";
+import MyProductSuggestionsPage from "../pages/public/MyProductSuggestionsPage";
 
 const PublicRoutes = [
   <Route path="/" element={<HomePage />} key="home" />,
@@ -13,6 +14,7 @@ const PublicRoutes = [
     key="product-detail"
   />,
   <Route path="/suggest-product" element={<SuggestProductPage />} />,
+  <Route path="/my-suggestions" element={<MyProductSuggestionsPage />} />,
 ];
 
 export default PublicRoutes;

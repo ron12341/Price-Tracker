@@ -8,10 +8,11 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    navigate("/"); // Go home first
+    navigate("/");
+
     setTimeout(() => {
-      setUser(null); // Then log out
-      localStorage.removeItem("token");
+      setUser(null);
+      localStorage.removeItem("user");
     }, 100);
   };
   const handleLogin = () => navigate("/auth/login");
@@ -38,6 +39,13 @@ const Navbar = () => {
                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
               >
                 My Profile
+              </MenuItem>
+              <MenuItem
+                as="button"
+                onClick={() => navigate("/my-suggestions")}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >
+                My Suggestions
               </MenuItem>
               <MenuItem
                 as="button"

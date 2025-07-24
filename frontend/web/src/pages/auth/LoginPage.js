@@ -26,8 +26,6 @@ const LoginPage = () => {
       const { token, isAdmin } = await login(email, password);
       setUser({ token, isAdmin });
 
-      console.log(redirectTo);
-
       navigate(redirectTo, { replace: true });
     } catch (error) {
       setErrorMsg("Invalid email or password.");
