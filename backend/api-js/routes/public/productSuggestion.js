@@ -11,9 +11,8 @@ router.put("/:id", productSuggestionController.updateProductSuggestion);
 
 router.get("/me", productSuggestionController.getMyProductSuggestions);
 
-router.get(
-  "/:id/editable",
-  productSuggestionController.getEditableProductSuggestion
-);
+router.get("/:id/editable", productSuggestionController.getEditableProductSuggestion);
+
+router.delete("/:id", productSuggestionController.deleteProductSuggestion);
 
 module.exports = router;

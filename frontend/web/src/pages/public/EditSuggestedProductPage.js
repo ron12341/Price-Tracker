@@ -15,7 +15,6 @@ const UpdateSuggestedProductPage = () => {
 
   const handleSubmit = async (productName, productQuery, stores, reason) => {
     try {
-      console.log(productName, productQuery, stores, reason);
       await updateProductSuggestion(
         {
           name: productName,
@@ -37,7 +36,6 @@ const UpdateSuggestedProductPage = () => {
     try {
       const res = await getEditableProductSuggestion(id, user.token);
       setSuggestion(res);
-      console.log(res);
     } catch (error) {
       console.error("Error fetching product:", error);
     }

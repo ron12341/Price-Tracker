@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getMyProductSuggestions } from "@publicServices/productSuggestionService";
+import { getMyProductSuggestions, deleteProductSuggestion } from "@publicServices/productSuggestionService";
 import Navbar from "./components/Navbar";
 import ProductSuggestionCard from "./components/ProductSuggestionCard";
 // import Pagination from "../../components/Pagination";
@@ -32,20 +32,27 @@ const UserSuggestionsPage = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      console.log(user.token);
+      await deleteProductSuggestion(id, user.token);
+      setRawSuggestions((prev) => prev.filter((suggestion) => suggestion._id !== id));
+    } catch (err) {
+      console.log(err);
+      alert(err.response.data.error);
+    }
+  };
+
   const handleSort = () => {
     const [sortedBy, order] = filters.sort.split("-");
-    setFilteredSuggestions(
-      sortItems(filteredSuggestions, { sortBy: sortedBy, direction: order })
-    );
+    setFilteredSuggestions(sortItems(filteredSuggestions, { sortBy: sortedBy, direction: order }));
   };
 
   const handleFilterAndSort = () => {
     const filtered =
       filters.status === "all"
         ? rawSuggestions
-        : rawSuggestions.filter(
-            (suggestion) => suggestion.status === filters.status
-          );
+        : rawSuggestions.filter((suggestion) => suggestion.status === filters.status);
 
     const [sortedBy, order] = filters.sort.split("-");
     const sorted = sortItems(filtered, { sortBy: sortedBy, direction: order });
@@ -102,9 +109,7 @@ const UserSuggestionsPage = () => {
               <label className="block text-sm font-medium mb-1">Status</label>
               <select
                 value={filters.status}
-                onChange={(e) =>
-                  setFilters({ ...filters, status: e.target.value })
-                }
+                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               >
                 <option value="all">All Statuses</option>
@@ -134,19 +139,13 @@ const UserSuggestionsPage = () => {
             {filteredSuggestions.length === 0 ? (
               <div className="text-center py-10">
                 <p className="text-gray-500">No suggestions found</p>
-                <a
-                  href="/suggest-product"
-                  className="text-blue-600 hover:underline mt-2 inline-block"
-                >
+                <a href="/suggest-product" className="text-blue-600 hover:underline mt-2 inline-block">
                   Suggest your first product
                 </a>
               </div>
             ) : (
               filteredSuggestions.map((suggestion) => (
-                <ProductSuggestionCard
-                  key={suggestion._id}
-                  suggestion={suggestion}
-                />
+                <ProductSuggestionCard key={suggestion._id} suggestion={suggestion} onDelete={handleDelete} />
               ))
             )}
           </div>

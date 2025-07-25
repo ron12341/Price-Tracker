@@ -32,7 +32,6 @@ const ProductSuggestionForm = ({ onSubmit, suggestion }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(form.name, form.query, form.stores, form.reason);
-    console.log("Submitted:", form);
   };
 
   return (

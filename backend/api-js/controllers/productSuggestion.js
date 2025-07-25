@@ -130,6 +130,19 @@ const updateProductSuggestion = async (req, res) => {
   }
 };
 
+const deleteProductSuggestion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+
+    const result = await productSuggestionService.deleteProductSuggestionAsOwner(id, user.id);
+
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
 const bulkDeleteProductSuggestions = async (req, res) => {
   try {
     const { ids } = req.body;
@@ -149,5 +162,6 @@ module.exports = {
   approveProductSuggestion,
   bulkApproveProductSuggestions,
   updateProductSuggestion,
+  deleteProductSuggestion,
   bulkDeleteProductSuggestions,
 };

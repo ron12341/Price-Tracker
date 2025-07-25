@@ -3,7 +3,7 @@ import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import StatusDisplay from "./StatusDisplay";
 
-const ProductSuggestionCard = ({ suggestion }) => {
+const ProductSuggestionCard = ({ suggestion, onDelete }) => {
   const navigate = useNavigate();
 
   if (!suggestion) return null;
@@ -34,7 +34,7 @@ const ProductSuggestionCard = ({ suggestion }) => {
                 </MenuItem>
                 <MenuItem
                   as="button"
-                  onClick={() => console.log("Delete suggestion")}
+                  onClick={() => onDelete(suggestion._id)}
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                 >
                   Delete

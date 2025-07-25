@@ -149,17 +149,12 @@ const updateProductSuggestionAsOwner = async (id, updates, userId) => {
 };
 
 const deleteProductSuggestionAsOwner = async (id, userId) => {
-  const suggestion = await ProductSuggestion.findById(id);
+  const result = await ProductSuggestion.findOneAndDelete({ _id: id, suggestedBy: userId });
 
-  if (!suggestion) {
+  if (!result) {
     throw new Error("Product suggestion not found");
   }
 
-  if (suggestion.suggestedBy !== userId) {
-    throw new Error("You are not authorized to delete this product suggestion");
-  }
-
-  const result = await ProductSuggestion.deleteOne({ _id: id });
   return result;
 };
 

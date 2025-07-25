@@ -82,10 +82,27 @@ const updateProductSuggestion = async (updates, id, token) => {
   }
 };
 
+const deleteProductSuggestion = async (id, token) => {
+  try {
+    const response = await axios.delete(`${baseUrl}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log(error.Authorization);
+    console.error("Error deleting product suggestion:", error);
+    throw error;
+  }
+};
+
 export {
   fetchProductSuggestions,
   addProductSuggestion,
   getMyProductSuggestions,
   getEditableProductSuggestion,
   updateProductSuggestion,
+  deleteProductSuggestion,
 };
