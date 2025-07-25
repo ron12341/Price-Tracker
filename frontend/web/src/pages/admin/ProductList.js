@@ -1,62 +1,71 @@
-import "./ProductList.css";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import Navbar from "./components/Navbar";
-import AddProductPopup from "./components/AddProductPopup";
-import { deleteProducts } from "../../services/admin/productService";
+import { useEffect, useState } from "react";
+import { deleteProducts, addProduct } from "@adminServices/productService";
+import { fetchProducts } from "@publicServices/productService";
+import AdminLayout from "./AdminLayout";
+import ProductCard from "./components/ProductCard";
+import AddProductPopup from "./components/forms/AddProductPopup";
+import UpdateProductPopup from "./components/forms/UpdateProductPopup";
 
-function ProductList() {
+const ProductListPage = () => {
   const [products, setProducts] = useState([]);
-  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
   const [action, setAction] = useState("");
-
-  const [showAddProductPopup, setShowAddProductPopup] = useState(false);
-
-  const refreshPage = () => {
-    window.location.reload(false);
-  };
+  const [showAddPopup, setShowAddPopup] = useState(false);
+  const [showUpdatePopup, setShowUpdatePopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleFetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/products");
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
+      const res = await fetchProducts();
+      setProducts(res);
+    } catch (err) {
+      console.error("Error fetching products:", err);
     }
   };
 
-  const handleDeleteSelectedProducts = async () => {
+  const handleAddProduct = async (name, query, imageUrl, stores) => {
     try {
-      if (selectedProductIds.length === 0) {
-        alert("Please select at least one product to delete.");
-        return;
-      }
+      console.log(name, query, imageUrl, stores);
+      const res = await addProduct(name, query, imageUrl, stores);
+      setProducts((prev) => [...prev, res]);
+      setShowAddPopup(false);
+    } catch (err) {
+      alert(err.response.data.error);
+      console.error("Error adding product:", err);
+    }
+  };
 
-      await deleteProducts(selectedProductIds);
-      refreshPage();
-    } catch (error) {
-      console.error("Error deleting products:", error);
+  const handleDelete = async () => {
+    if (selectedIds.length === 0) {
+      alert("Select items to delete.");
+      return;
+    }
+
+    try {
+      await deleteProducts(selectedIds);
+      setProducts((prev) =>
+        prev.filter((item) => !selectedIds.includes(item._id))
+      );
+      setSelectedIds([]);
+    } catch (err) {
+      alert(err.response.data.error);
+      console.error("Error deleting:", err);
     }
   };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedProductIds(products.map((product) => product._id));
+      setSelectedIds(products.map((p) => p._id));
     } else {
-      setSelectedProductIds([]);
+      setSelectedIds([]);
     }
   };
 
   const handleCheckbox = (e) => {
-    const productId = e.target.id;
-
-    if (e.target.checked) {
-      setSelectedProductIds([...selectedProductIds, productId]);
-    } else {
-      setSelectedProductIds(
-        selectedProductIds.filter((id) => id !== productId)
-      );
-    }
+    const id = e.target.id;
+    setSelectedIds((prev) =>
+      e.target.checked ? [...prev, id] : prev.filter((x) => x !== id)
+    );
   };
 
   useEffect(() => {
@@ -64,109 +73,89 @@ function ProductList() {
   }, []);
 
   return (
-    <div className="listpage-container">
-      <Navbar />
-
-      <div className="breadcrumb-container">
-        <p>Home / Collections / Products</p>
+    <AdminLayout current="Products">
+      <div className="flex justify-between items-center mb-6 text-2xl">
+        <p>Select collection to change</p>
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          onClick={() => setShowAddPopup(true)}
+        >
+          Add Product
+        </button>
       </div>
 
-      <div className="content">
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Collections</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>
-                  <p>Products</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div className="list-container">
-          <div className="header-container">
-            <p>Select collection to change</p>
-            <button onClick={() => setShowAddProductPopup(true)}>
-              Add Product
-            </button>
-          </div>
-
-          <div className="action-container">
-            <p>Action:</p>
-            <select
-              name="action"
-              id="action"
-              onChange={(e) => setAction(e.target.value)}
-            >
-              <option value="default">--------</option>
-              <option value="delete">Delete</option>
-            </select>
-            <button
-              onClick={() => {
-                if (action === "delete") {
-                  handleDeleteSelectedProducts();
-                }
-              }}
-            >
-              Apply
-            </button>
-            <p>
-              {selectedProductIds.length} of {products.length} selected
-            </p>
-          </div>
-
-          <div className="list">
-            <div className="list-item-container title">
-              <input
-                type="checkbox"
-                id="checkbox-title"
-                checked={
-                  selectedProductIds.length === products.length &&
-                  products.length > 0
-                }
-                onChange={handleSelectAll}
-              />
-              <p id="title">Select All</p>
-            </div>
-            {products.map((product) => (
-              <div className="list-item-container item" key={product._id}>
-                <input
-                  type="checkbox"
-                  id={product._id}
-                  checked={selectedProductIds.includes(product._id)}
-                  onChange={handleCheckbox}
-                />
-                <p>{product.query}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="counter-container">
-            <p>{products.length} products</p>
-          </div>
-        </div>
+      <div className="flex items-center gap-3 mb-6 text-sm">
+        <p>Action:</p>
+        <select
+          value={action}
+          onChange={(e) => setAction(e.target.value)}
+          className="bg-transparent text-white border border-gray-500 rounded px-2 py-1"
+        >
+          <option className="text-black" value="default">
+            --------
+          </option>
+          <option className="text-black" value="delete">
+            Delete
+          </option>
+        </select>
+        <button
+          onClick={() => action === "delete" && handleDelete()}
+          className="border px-3 py-1 rounded border-gray-400 hover:bg-white hover:text-gray-900 transition"
+        >
+          Apply
+        </button>
+        <p>
+          {selectedIds.length} of {products.length} selected
+        </p>
       </div>
 
-      {showAddProductPopup && (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center bg-cyan-800 px-4 py-2 text-white font-bold rounded">
+          <input
+            type="checkbox"
+            checked={
+              products.length > 0 && selectedIds.length === products.length
+            }
+            onChange={handleSelectAll}
+            className="w-5 h-5 mr-3"
+          />
+          <p>Select All</p>
+        </div>
+
+        {products.map((product) => (
+          <ProductCard
+            key={product._id}
+            product={product}
+            onSelect={handleCheckbox}
+            isSelected={selectedIds.includes(product._id)}
+            onUpdate={() => {
+              setShowUpdatePopup(true);
+              setSelectedProduct(product);
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="mt-6 border-t border-gray-600 pt-3">
+        <p className="text-sm">{products.length} products total</p>
+      </div>
+
+      {showAddPopup && (
         <AddProductPopup
-          onClose={() => {
-            setShowAddProductPopup(false);
-          }}
-          onSubmit={() => {
-            setShowAddProductPopup(false);
-            refreshPage();
-          }}
+          onClose={() => setShowAddPopup(false)}
+          onSubmit={handleAddProduct}
         />
       )}
-    </div>
-  );
-}
 
-export default ProductList;
+      {showUpdatePopup && selectedProduct && (
+        <UpdateProductPopup
+          productToUpdate={selectedProduct}
+          onClose={() => setShowUpdatePopup(false)}
+          onUpdate={console.log("Updated:", selectedProduct)}
+        />
+      )}
+    </AdminLayout>
+  );
+};
+
+export default ProductListPage;

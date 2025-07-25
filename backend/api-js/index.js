@@ -10,16 +10,25 @@ app.use(cors());
 // JSON
 app.use(express.json());
 
-// ROUTES
-// Public routes
-const productsRouter = require("./routes/products");
+//
+// PUBLIC ROUTES
+//
+const productsRouter = require("./routes/public/products"); // Products
 app.use("/products", productsRouter);
 
-const authRouter = require("./routes/auth");
+const productSuggestionRouter = require("./routes/public/productSuggestion"); // Product suggestions
+app.use("/product-suggestions", productSuggestionRouter);
+
+const authRouter = require("./routes/public/auth"); // Auth
 app.use("/auth", authRouter);
 
-// Private routes
-const adminProductsRouter = require("./routes/admin/products");
+//
+// PRIVATE ROUTES
+//
+const adminProductSuggestionRouter = require("./routes/private/productSuggestion"); // Product suggestions
+app.use("/admin/product-suggestions", adminProductSuggestionRouter);
+
+const adminProductsRouter = require("./routes/private/products"); // Products
 app.use("/admin/products", adminProductsRouter);
 
 // Health check

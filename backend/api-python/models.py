@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 
 class StoreRequest(BaseModel):
@@ -13,7 +13,8 @@ class StoreResponse(BaseModel):
 class ScrapeRequest(BaseModel):
     query: str
     stores: List[StoreRequest]
+    imageUrl: Optional[str] = None
 
 class ScrapeResponse(BaseModel):
     stores: List[StoreResponse]
-    scrapedAt: str
+    imageUrl: Optional[str] = None

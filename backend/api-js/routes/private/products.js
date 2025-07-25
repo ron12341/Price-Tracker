@@ -8,7 +8,7 @@ router.use(authMiddleware, isAdmin);
 
 router.post("/", async (req, res) => {
   try {
-    const { name, query, imageUrl, stores } = req.body;
+    const { name, query, stores, imageUrl } = req.body;
 
     // Validate required fields
     if (!name || !query || !stores) {
@@ -24,16 +24,19 @@ router.post("/", async (req, res) => {
     const response = await axios.post("http://localhost:8000/scrape", {
       query: query,
       stores: stores,
+      imageUrl: imageUrl || null,
     });
+
+    // data = { imageUrl, stores }
     const data = response.data;
 
     // Save the product to the database
     const result = await Product.create({
       name,
       query,
-      imageUrl,
-      scrapedAt: new Date(),
+      imageUrl: data.imageUrl,
       stores: data.stores,
+      scrapedAt: new Date(),
     });
 
     return res.json(result);

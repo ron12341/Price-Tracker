@@ -1,7 +1,4 @@
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-
-import "./ProductCard.css";
 
 const ProductCard = ({ product }) => {
   const [lowestPriceStore, setLowestPriceStore] = useState(product.stores[0]);
@@ -23,17 +20,26 @@ const ProductCard = ({ product }) => {
   }, []);
 
   return (
-    <div className="product-card">
-      <Link to={`/products/${product._id}`}>
-        <img src={product.imageUrl} alt={product.name} />
-        <p className="product-name">{product.query}</p>
-      </Link>
-      <div className="price-container">
+    <div className="max-w-[300px] flex flex-col items-center justify-between p-5 border border-gray-300 rounded-md bg-white shadow-md transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+      <a
+        href={`/products/${product._id}`}
+        className="flex flex-1 flex-col items-center justify-between w-full"
+      >
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="max-w-full h-auto mb-2.5"
+        />
+        <p className="text-center w-full text-lg font-bold mb-1.5 line-clamp-2">
+          {product.query}
+        </p>
+      </a>
+      <div className="flex flex-row items-center justify-between w-full mt-2.5 text-lg font-bold">
         <p>
-          <span className="price-symbol">$</span>
+          <span className="mr-1.5">$</span>
           {lowestPriceStore.price}
         </p>
-        <p className="store-name">{lowestPriceStore.storeName}</p>
+        <p className="capitalize">{lowestPriceStore.storeName}</p>
       </div>
     </div>
   );
