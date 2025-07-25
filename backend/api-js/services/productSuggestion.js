@@ -149,10 +149,14 @@ const updateProductSuggestionAsOwner = async (id, updates, userId) => {
 };
 
 const deleteProductSuggestionAsOwner = async (id, userId) => {
-  const result = await ProductSuggestion.findOneAndDelete({ _id: id, suggestedBy: userId });
+  const suggestion = await ProductSuggestion.findOne({ _id: id, suggestedBy: userId });
 
-  if (!result) {
+  if (!suggestion) {
     throw new Error("Product suggestion not found");
+  }
+
+  if (suggestion.status !== "pending" && suggestion.status !== "rejected") {
+    throw new Error("Product suggestion is not editable");
   }
 
   return result;
