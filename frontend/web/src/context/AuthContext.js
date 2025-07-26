@@ -33,8 +33,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
+  const setUserTrackedProducts = (trackedProducts) => setUser((prevUser) => ({ ...prevUser, trackedProducts }));
+
   return (
-    <AuthContext.Provider value={{ user, setUser, isAuthLoading }}>
+    <AuthContext.Provider value={{ user, setUser, isAuthLoading, setUserTrackedProducts }}>
       {children}
     </AuthContext.Provider>
   );

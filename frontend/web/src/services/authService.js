@@ -15,12 +15,13 @@ const login = async (email, password) => {
   }
 };
 
-const register = async (email, password) => {
+const register = async (email, password, name) => {
   try {
     const response = await axios.post(`${baseUrl}/auth/register`, {
       email,
       password,
       isAdmin: false,
+      name,
     });
     return response.data;
   } catch (error) {

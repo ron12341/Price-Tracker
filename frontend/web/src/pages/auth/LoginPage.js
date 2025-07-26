@@ -23,8 +23,18 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const { token, isAdmin } = await login(email, password);
-      setUser({ token, isAdmin });
+      console.log(email, password);
+      console.log("login");
+      const res = await login(email, password);
+
+      setUser({
+        token: res.token,
+        isAdmin: res.user.isAdmin,
+        email: res.user.email,
+        firstName: res.user.name.first,
+        lastName: res.user.name.last,
+        trackedProducts: res.user.trackedProducts,
+      });
 
       navigate(redirectTo, { replace: true });
     } catch (error) {
@@ -45,9 +55,7 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit}>
             {/* Email Field */}
             <div className="relative text-left">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
                 type="email"
                 placeholder="Email"
@@ -59,9 +67,7 @@ const LoginPage = () => {
             </div>
             {/* Password Field */}
             <div className="relative text-left">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <input
                 type="password"
                 placeholder="Password"
@@ -72,12 +78,7 @@ const LoginPage = () => {
               />
             </div>
             {/* Error message */}
-            {errorMsg && (
-              <div className="text-red-500 text-sm mb-4 text-left">
-                {errorMsg}
-              </div>
-            )}{" "}
-            {/* Login Button */}
+            {errorMsg && <div className="text-red-500 text-sm mb-4 text-left">{errorMsg}</div>} {/* Login Button */}
             <button
               type="submit"
               className="w-full py-3 bg-blue-600 text-white rounded-lg text-base hover:bg-blue-800 transition-colors"

@@ -1,4 +1,3 @@
-const { listeners } = require("../models/ProductSuggestion");
 const productSuggestionService = require("../services/productSuggestion");
 
 const addProductSuggestion = async (req, res) => {

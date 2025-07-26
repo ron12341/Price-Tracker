@@ -1,10 +1,13 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import { useLoading } from "../../context/LoadingContext";
+import { handleTrackProduct } from "@publicServices/userService";
+import { useLoading } from "@context/LoadingContext";
+import { useAuth } from "@context/AuthContext";
 
 import Narvbar from "./components/Navbar";
+import TrackButton from "./components/TrackButton";
 
 const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -24,22 +27,46 @@ const thClass = "text-left p-3 border-b border-[#cbcbcb]";
 const tdClass = "text-left p-3 border-b border-[#cbcbcb]";
 
 const ProductDetailPage = () => {
+  const { isLoading, showLoading, hideLoading } = useLoading();
+  const { user, setUserTrackedProducts, isAuthLoading } = useAuth();
+  const navigate = useNavigate();
+
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [isTracked, setIsTracked] = useState(false);
 
-  const { isLoading, showLoading, hideLoading } = useLoading();
+  const handleTrackingProducts = async (productId) => {
+    if (!user && !isAuthLoading) {
+      navigate("/auth/login", { replace: true });
+      return;
+    }
+
+    try {
+      const response = await handleTrackProduct(productId, user.token);
+      setUserTrackedProducts(response.trackedProducts);
+
+      return response;
+    } catch (error) {
+      console.error("Error saving product:", error);
+      throw error;
+    }
+  };
 
   const sortByPrice = (stores) => {
     return stores.sort((a, b) => a.price - b.price);
   };
 
   useEffect(() => {
+    if (product && user) {
+      setIsTracked(user.trackedProducts.includes(product._id));
+    }
+  }, [user, product]);
+
+  useEffect(() => {
     const fetchProduct = async () => {
       showLoading("Fetching product...");
       try {
-        const response = await axios.get(
-          `http://localhost:5000/products/${id}`
-        );
+        const response = await axios.get(`http://localhost:5000/products/${id}`);
 
         // Sort stores by price
         if (response.data.stores.length > 0) {
@@ -57,10 +84,12 @@ const ProductDetailPage = () => {
     fetchProduct();
   }, [id]);
 
+  // Loading state
   if (isLoading) {
     return null;
   }
 
+  // Product not found
   if (!product) {
     return <p>Product not found</p>;
   }
@@ -71,18 +100,22 @@ const ProductDetailPage = () => {
       <div className="w-full min-h-[100px] flex justify-center items-center p-5 bg-[#8675b3] text-white">
         <h1 className="text-2xl font-bold">{product.name}</h1>
       </div>
-      <div className="flex flex-row flex-1 w-4/5 my-10 gap-[50px] px-0 max-[950px]:w-full max-[950px]:px-[10px] max-[950px]:gap-[15px] max-[750px]:flex-col max-[750px]:gap-[20px]">
+
+      <div className="w-4/5 flex justify-end items-end mt-5">
+        <TrackButton
+          productId={product._id}
+          isTracked={isTracked}
+          onClick={handleTrackingProducts}
+          text="Add to wishlist"
+        />
+      </div>
+
+      <div className="flex flex-row flex-1 w-4/5 my-5 gap-[50px] px-0 max-[950px]:w-full max-[950px]:px-[10px] max-[950px]:gap-[15px] max-[750px]:flex-col max-[750px]:gap-[20px]">
         <div className="w-fit h-fit p-5 border border-[#ccc] rounded-md shadow-[0_2px_5px_rgba(0,0,0,0.3)] max-[750px]:mx-auto">
-          <img
-            className="max-w-[300px] w-full h-auto"
-            src={product.imageUrl}
-            alt={product.query}
-          />
+          <img className="max-w-[300px] w-full h-auto" src={product.imageUrl} alt={product.query} />
         </div>
         <div className="flex-1 h-fit">
-          <p className="text-[16px] mb-[10px] text-[#666]">
-            Last Scraped at: {formatDate(product.scrapedAt)}
-          </p>
+          <p className="text-[16px] mb-[10px] text-[#666]">Last Scraped at: {formatDate(product.scrapedAt)}</p>
           <div className="w-full overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -97,9 +130,7 @@ const ProductDetailPage = () => {
               <tbody>
                 {product.stores.map((store) => (
                   <tr key={store.storeName}>
-                    <td className={tdClass + " capitalize"}>
-                      {store.storeName}
-                    </td>
+                    <td className={tdClass + " capitalize"}>{store.storeName}</td>
                     <td className={tdClass}>Available</td>
                     <td className={tdClass}>${store.price}</td>
                     <td className={tdClass}>

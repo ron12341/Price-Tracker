@@ -1,17 +1,23 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLoading } from "../../context/LoadingContext";
-import axios from "axios";
+import { useLoading } from "@context/LoadingContext";
+import { useAuth } from "@context/AuthContext";
+
+import { handleTrackProduct } from "@publicServices/userService";
 
 import Navbar from "./components/Navbar";
 import ProductsGrid from "./components/ProductsGrid";
 
 const ProductsPage = () => {
-  const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const { user, isAuthLoading, setUserTrackedProducts } = useAuth();
+  const { isLoading, showLoading, hideLoading } = useLoading();
   const navigate = useNavigate();
 
-  const { isLoading, showLoading, hideLoading } = useLoading();
+  const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [trackedProducts, setTrackedProducts] = useState([]);
 
   const fetchProducts = async () => {
     showLoading("Fetching products...");
@@ -25,13 +31,44 @@ const ProductsPage = () => {
     }
   };
 
+  const handleTrackingProducts = async (productId) => {
+    if (!user && !isAuthLoading) {
+      navigate("/auth/login", { replace: true });
+      return;
+    }
+
+    try {
+      const response = await handleTrackProduct(productId, user.token);
+
+      setTrackedProducts(response.trackedProducts);
+      setUserTrackedProducts(response.trackedProducts);
+
+      return response;
+    } catch (error) {
+      console.error("Error saving product:", error);
+      throw error;
+    }
+  };
+
+  const handleFiltering = () => {
+    setFilteredProducts(products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase())));
+  };
+
+  // Fetch products on component mount
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    if (user?.trackedProducts) {
+      setTrackedProducts(user.trackedProducts);
+    }
+  }, [user]);
+
+  // Update filtered products when searchTerm or products change
+  useEffect(() => {
+    handleFiltering();
+  }, [searchTerm, products]);
 
   // If loading, return null
   if (isLoading) return null;
@@ -51,6 +88,18 @@ const ProductsPage = () => {
           </button>
         </div>
 
+        {/* Tracked Products Section - Only shows if user is logged in */}
+        {user && trackedProducts.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-medium mb-3">Your Saved Products</h3>
+            <ProductsGrid
+              products={products.filter((p) => trackedProducts.includes(p._id))}
+              trackedProducts={trackedProducts}
+              onTrackingProduct={handleTrackingProducts}
+            />
+          </div>
+        )}
+
         <div className="flex items-center mb-5 text-lg">
           <label htmlFor="search" className="mr-2">
             Search:
@@ -65,7 +114,11 @@ const ProductsPage = () => {
           />
         </div>
 
-        <ProductsGrid products={filteredProducts} />
+        <ProductsGrid
+          products={filteredProducts}
+          trackedProducts={trackedProducts}
+          onTrackingProduct={handleTrackingProducts}
+        />
       </div>
     </div>
   );

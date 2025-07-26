@@ -6,6 +6,10 @@ import Navbar from "./components/Navbar";
 const ResgisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState({
+    first: "",
+    last: "",
+  });
   const [errorMsgs, setErrorMsgs] = useState({});
 
   const navigate = useNavigate();
@@ -43,7 +47,7 @@ const ResgisterPage = () => {
     }
 
     try {
-      await register(email, password);
+      await register(email, password, name);
       navigate("/auth/login");
     } catch (error) {
       setErrorMsgs({
@@ -65,9 +69,7 @@ const ResgisterPage = () => {
           <form onSubmit={handleSubmit}>
             {/* Email Field*/}
             <div className="relative text-left">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
                 type="email"
                 placeholder="Email"
@@ -76,6 +78,33 @@ const ResgisterPage = () => {
                 className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-lg text-base"
                 required
               />
+            </div>
+
+            {/* Name Field */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="relative text-left">
+                <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  value={name.first}
+                  onChange={(e) => setName({ ...name, first: e.target.value })}
+                  className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-lg text-base"
+                  required
+                />
+              </div>
+
+              <div className="relative text-left">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  value={name.last}
+                  onChange={(e) => setName({ ...name, last: e.target.value })}
+                  className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-lg text-base"
+                  required
+                />
+              </div>
             </div>
 
             {/* Password Field*/}

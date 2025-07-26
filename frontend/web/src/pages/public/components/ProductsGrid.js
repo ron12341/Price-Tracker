@@ -1,7 +1,7 @@
 import ProductCard from "./ProductCard";
 import { useNavigate } from "react-router-dom";
 
-const ProductsGrid = ({ products }) => {
+const ProductsGrid = ({ products, trackedProducts, onTrackingProduct }) => {
   const navigate = useNavigate();
 
   if (!products || products.length === 0) {
@@ -21,7 +21,12 @@ const ProductsGrid = ({ products }) => {
   return (
     <div className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
       {products.map((product) => (
-        <ProductCard key={product._id} product={product} />
+        <ProductCard
+          key={product._id}
+          product={product}
+          isTracked={trackedProducts.includes(product._id)}
+          onTrackingProduct={onTrackingProduct}
+        />
       ))}
     </div>
   );
