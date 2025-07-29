@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { deleteProducts, addProduct } from "@adminServices/productService";
 import { fetchProducts } from "@publicServices/productService";
+import { useLoading } from "@context/LoadingContext";
 import AdminLayout from "./AdminLayout";
 import ProductCard from "./components/ProductCard";
 import AddProductPopup from "./components/forms/AddProductPopup";
 import UpdateProductPopup from "./components/forms/UpdateProductPopup";
 
 const ProductListPage = () => {
+  const { isLoading, showLoading, hideLoading } = useLoading();
+
   const [products, setProducts] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [action, setAction] = useState("");
@@ -16,15 +19,19 @@ const ProductListPage = () => {
 
   const handleFetchProducts = async () => {
     try {
+      showLoading("Fetching products...");
       const res = await fetchProducts();
       setProducts(res);
     } catch (err) {
       console.error("Error fetching products:", err);
+    } finally {
+      hideLoading();
     }
   };
 
   const handleAddProduct = async (name, query, imageUrl, stores) => {
     try {
+      showLoading("Adding product...");
       console.log(name, query, imageUrl, stores);
       const res = await addProduct(name, query, imageUrl, stores);
       setProducts((prev) => [...prev, res]);
@@ -32,6 +39,8 @@ const ProductListPage = () => {
     } catch (err) {
       alert(err.response.data.error);
       console.error("Error adding product:", err);
+    } finally {
+      hideLoading();
     }
   };
 
@@ -42,14 +51,15 @@ const ProductListPage = () => {
     }
 
     try {
+      showLoading("Deleting...");
       await deleteProducts(selectedIds);
-      setProducts((prev) =>
-        prev.filter((item) => !selectedIds.includes(item._id))
-      );
+      setProducts((prev) => prev.filter((item) => !selectedIds.includes(item._id)));
       setSelectedIds([]);
     } catch (err) {
       alert(err.response.data.error);
       console.error("Error deleting:", err);
+    } finally {
+      hideLoading();
     }
   };
 
@@ -63,14 +73,14 @@ const ProductListPage = () => {
 
   const handleCheckbox = (e) => {
     const id = e.target.id;
-    setSelectedIds((prev) =>
-      e.target.checked ? [...prev, id] : prev.filter((x) => x !== id)
-    );
+    setSelectedIds((prev) => (e.target.checked ? [...prev, id] : prev.filter((x) => x !== id)));
   };
 
   useEffect(() => {
     handleFetchProducts();
   }, []);
+
+  if (isLoading) return null;
 
   return (
     <AdminLayout current="Products">
@@ -113,9 +123,7 @@ const ProductListPage = () => {
         <div className="flex items-center bg-cyan-800 px-4 py-2 text-white font-bold rounded">
           <input
             type="checkbox"
-            checked={
-              products.length > 0 && selectedIds.length === products.length
-            }
+            checked={products.length > 0 && selectedIds.length === products.length}
             onChange={handleSelectAll}
             className="w-5 h-5 mr-3"
           />
@@ -140,12 +148,7 @@ const ProductListPage = () => {
         <p className="text-sm">{products.length} products total</p>
       </div>
 
-      {showAddPopup && (
-        <AddProductPopup
-          onClose={() => setShowAddPopup(false)}
-          onSubmit={handleAddProduct}
-        />
-      )}
+      {showAddPopup && <AddProductPopup onClose={() => setShowAddPopup(false)} onSubmit={handleAddProduct} />}
 
       {showUpdatePopup && selectedProduct && (
         <UpdateProductPopup

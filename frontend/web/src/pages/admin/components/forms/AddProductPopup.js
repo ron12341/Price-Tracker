@@ -120,18 +120,14 @@ const AddProductPopup = ({ onClose, onSubmit }) => {
                   className="flex-1 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400"
                   placeholder="Store Name"
                   value={store.storeName}
-                  onChange={(e) =>
-                    handleStoreChange(index, "storeName", e.target.value)
-                  }
+                  onChange={(e) => handleStoreChange(index, "storeName", e.target.value)}
                 />
                 <input
                   type="text"
                   className="flex-1 px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-400"
                   placeholder="Store URL"
                   value={store.url}
-                  onChange={(e) =>
-                    handleStoreChange(index, "url", e.target.value)
-                  }
+                  onChange={(e) => handleStoreChange(index, "url", e.target.value)}
                 />
                 <button
                   type="button"

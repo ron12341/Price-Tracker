@@ -14,10 +14,18 @@ const LoginPage = () => {
     const password = e.target.password.value;
 
     try {
-      const { token, isAdmin } = await login(email, password);
+      const res = await login(email, password);
+      const isAdmin = res.user.isAdmin;
 
       if (isAdmin) {
-        setUser({ token, isAdmin });
+        setUser({
+          token: res.token,
+          isAdmin: res.user.isAdmin,
+          email: res.user.email,
+          firstName: res.user.name.first,
+          lastName: res.user.name.last,
+          trackedProducts: res.user.trackedProducts,
+        });
         navigate("/admin");
       } else {
         setErrorMsg("You are not authorized to access this page.");
@@ -29,18 +37,10 @@ const LoginPage = () => {
 
   return (
     <div className="flex justify-center items-center w-screen h-screen bg-[#bebebe] font-sans">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-sky-800 shadow-md rounded-md p-[20px] max-w-[500px] w-full"
-      >
-        <h2 className="text-3xl font-semibold mb-5 text-white">
-          Login as admin
-        </h2>
+      <form onSubmit={handleSubmit} className="bg-sky-800 shadow-md rounded-md p-[20px] max-w-[500px] w-full">
+        <h2 className="text-3xl font-semibold mb-5 text-white">Login as admin</h2>
         <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-white text-sm font-bold mb-2"
-          >
+          <label htmlFor="email" className="block text-white text-sm font-bold mb-2">
             Email
           </label>
           <input
@@ -52,10 +52,7 @@ const LoginPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-white text-sm font-bold mb-2"
-          >
+          <label htmlFor="password" className="block text-white text-sm font-bold mb-2">
             Password
           </label>
           <input
@@ -67,9 +64,7 @@ const LoginPage = () => {
           />
         </div>
 
-        {errorMsg && (
-          <p className="text-red-500 font-semibold mb-4">{errorMsg}</p>
-        )}
+        {errorMsg && <p className="text-red-500 font-semibold mb-4">{errorMsg}</p>}
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
