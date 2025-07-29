@@ -35,15 +35,14 @@ def scrape_amazon(url: str, imgUrl: Optional[str] = None) -> tuple[str, Optional
         
         price = None
 
-        price_ids = [
-            "a-offscreen",
-            "a-price-whole"
+        price_selectors = [
+            "#tp_price_block_total_price_ww span.a-offscreen",
         ]
 
-        for price_id in price_ids:
-            price_element = soup.find(id=price_id) or soup.find(class_=price_id)
+        for selector in price_selectors:
+            price_element = soup.select_one(selector)
             if price_element and price_element.text.strip():
-                price = price_element.text.strip()
+                price = price_element.text.strip().replace("$", "").replace(",", "")
                 break
 
         if price:
