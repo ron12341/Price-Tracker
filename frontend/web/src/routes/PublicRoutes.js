@@ -5,6 +5,7 @@ import ProductDetailPage from "../pages/public/ProductDetailPage";
 import SuggestProductPage from "../pages/public/SuggestProductPage";
 import MyProductSuggestionsPage from "../pages/public/MyProductSuggestionsPage";
 import EditSuggestedProductPage from "../pages/public/EditSuggestedProductPage";
+import UserProfilePage from "../pages/public/UserProfilePage";
 
 const PublicRoutes = [
   <Route path="/" element={<HomePage />} key="home" />,
@@ -13,6 +14,7 @@ const PublicRoutes = [
   <Route path="/suggest-product" element={<SuggestProductPage />} />,
   <Route path="/my-suggestions" element={<MyProductSuggestionsPage />} />,
   <Route path="/my-suggestions/:id/edit" element={<EditSuggestedProductPage />} />,
+  <Route path="/profile" element={<UserProfilePage />} />,
 ];
 
 export default PublicRoutes;
