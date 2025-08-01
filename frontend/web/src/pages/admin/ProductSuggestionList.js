@@ -32,7 +32,17 @@ const ProductSuggestionListPage = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleSingleDelete = async (id) => {
+    try {
+      await bulkDeleteProductSuggestions([id], user.token);
+      setProductSuggestions((prev) => prev.filter((item) => item._id !== id));
+      setSelectedIds([]);
+    } catch (err) {
+      console.error("Error deleting:", err);
+    }
+  };
+
+  const handleBulkDelete = async () => {
     if (selectedIds.length === 0) {
       alert("Select items to delete.");
       return;
@@ -134,7 +144,7 @@ const ProductSuggestionListPage = () => {
         <button
           onClick={() => {
             if (action === "delete") {
-              handleDelete();
+              handleBulkDelete();
             } else if (action === "approve") {
               handleApprove();
             }
@@ -174,6 +184,7 @@ const ProductSuggestionListPage = () => {
                 }}
                 onSelect={handleCheckbox}
                 isSelected={selectedIds.includes(product._id)}
+                onDelete={handleSingleDelete}
               />
             ))}
           </>

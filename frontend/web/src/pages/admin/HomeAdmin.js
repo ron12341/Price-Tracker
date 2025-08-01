@@ -60,7 +60,7 @@ const HomeAdmin = () => {
     if (user && !isAuthLoading) {
       handleFetchCounts();
     }
-  });
+  }, [user, isAuthLoading]);
 
   return (
     <div className="min-h-screen bg-gray-50">

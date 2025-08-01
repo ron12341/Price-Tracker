@@ -49,6 +49,8 @@ const UserSuggestionsPage = () => {
   };
 
   const handleFilterAndSort = () => {
+    if (rawSuggestions.length === 0) return;
+
     const filtered =
       filters.status === "all"
         ? rawSuggestions
@@ -78,6 +80,8 @@ const UserSuggestionsPage = () => {
   useEffect(() => {
     if (rawSuggestions.length > 0) {
       handleFilterAndSort();
+    } else {
+      setFilteredSuggestions([]);
     }
   }, [filters.status, rawSuggestions]);
 
