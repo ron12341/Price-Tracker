@@ -3,17 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const AdminAccess = ({ children }) => {
-  const { user, setUser, loading } = useAuth();
+  const { user, setUser, isAuthLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && (!user || !user.isAdmin)) {
+    if (!isAuthLoading && (!user || !user.isAdmin)) {
       setUser(null);
       navigate("/admin/login", { replace: true });
     }
-  }, [user, loading, setUser, navigate]);
+  }, [user, isAuthLoading, setUser, navigate]);
 
-  if (loading) {
+  if (isAuthLoading) {
     return <div>Loading...</div>;
   }
 
