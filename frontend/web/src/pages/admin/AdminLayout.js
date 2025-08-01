@@ -17,9 +17,11 @@ const AdminLayout = ({ children, current, counts = {} }) => {
 
       {/* Breadcrumb */}
       <div className="h-12 flex items-center px-8 bg-white border-b text-gray-600 text-sm">
-        <span className="hover:text-blue-600 cursor-pointer">Home</span>
+        <a href="/admin" className="hover:text-blue-600 cursor-pointer">
+          Home
+        </a>
         <FiChevronRight className="mx-2" />
-        <span className="hover:text-blue-600 cursor-pointer">Collections</span>
+        <span className="hover:text-blue-600">Collections</span>
         <FiChevronRight className="mx-2" />
         <span className="text-gray-800 font-medium">{current}</span>
       </div>

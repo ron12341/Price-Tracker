@@ -78,15 +78,7 @@ const ProductsPage = () => {
       <Navbar />
 
       <div className="flex-1 p-5 bg-white rounded-md shadow-md overflow-y-auto">
-        <div className="flex justify-between items-center mb-5">
-          <h2 className="text-3xl font-semibold mb-5">Products</h2>
-          <button
-            onClick={() => navigate("/suggest-product")}
-            className="bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-md shadow mb-4"
-          >
-            + Suggest a Product
-          </button>
-        </div>
+        <h2 className="text-3xl font-semibold mb-5">Products</h2>
 
         {/* Tracked Products Section - Only shows if user is logged in */}
         {user && trackedProducts.length > 0 && (
