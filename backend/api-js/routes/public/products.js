@@ -61,14 +61,12 @@ router.get("/:id", async (req, res) => {
         { upsert: true, new: true }
       );
 
-      return res.json(updated);
+      return res.status(200).json(updated);
     } catch (scrapeError) {
       if (cachedProduct) {
-        return res.json(cachedProduct);
+        return res.status(200).json(cachedProduct);
       }
-      return res
-        .status(500)
-        .json({ error: "Scraping failed and no cached data" });
+      return res.status(500).json({ error: "Scraping failed and no cached data" });
     }
   } catch (err) {
     return res.status(500).json({ error: "Internal server error" });

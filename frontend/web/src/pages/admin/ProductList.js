@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { deleteProducts, addProduct } from "@adminServices/productService";
+import { deleteProducts, addProduct, updateProduct } from "@adminServices/productService";
 import { fetchProducts } from "@publicServices/productService";
 import { useLoading } from "@context/LoadingContext";
 import AdminLayout from "./AdminLayout";
@@ -44,7 +44,20 @@ const ProductListPage = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleSingleDelete = async (id) => {
+    try {
+      showLoading("Deleting...");
+      await deleteProducts([id]);
+      setProducts((prev) => prev.filter((item) => item._id !== id));
+    } catch (err) {
+      alert(err.response.data.error);
+      console.error("Error deleting:", err);
+    } finally {
+      hideLoading();
+    }
+  };
+
+  const handleBulkDelete = async () => {
     if (selectedIds.length === 0) {
       alert("Select items to delete.");
       return;
@@ -58,6 +71,20 @@ const ProductListPage = () => {
     } catch (err) {
       alert(err.response.data.error);
       console.error("Error deleting:", err);
+    } finally {
+      hideLoading();
+    }
+  };
+
+  const handleUpdateProduct = async (id, name, query, imageUrl, stores) => {
+    try {
+      showLoading("Updating...");
+      const res = await updateProduct(id, name, query, imageUrl, stores);
+      setProducts((prev) => prev.map((item) => (item._id === res._id ? res : item)));
+      setShowUpdatePopup(false);
+    } catch (err) {
+      alert(err.response.data.error);
+      console.error("Error updating:", err);
     } finally {
       hideLoading();
     }
@@ -87,7 +114,7 @@ const ProductListPage = () => {
       <div className="flex justify-between items-center mb-6 text-2xl">
         <p>Select collection to change</p>
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          className="border px-3 py-1 rounded border-gray-400 hover:bg-white hover:text-gray-900 transition"
           onClick={() => setShowAddPopup(true)}
         >
           Add Product
@@ -99,7 +126,7 @@ const ProductListPage = () => {
         <select
           value={action}
           onChange={(e) => setAction(e.target.value)}
-          className="bg-transparent text-white border border-gray-500 rounded px-2 py-1"
+          className="bg-transparent text-black border border-gray-500 rounded px-2 py-1"
         >
           <option className="text-black" value="default">
             --------
@@ -109,7 +136,7 @@ const ProductListPage = () => {
           </option>
         </select>
         <button
-          onClick={() => action === "delete" && handleDelete()}
+          onClick={() => action === "delete" && handleBulkDelete()}
           className="border px-3 py-1 rounded border-gray-400 hover:bg-white hover:text-gray-900 transition"
         >
           Apply
@@ -140,6 +167,7 @@ const ProductListPage = () => {
               setShowUpdatePopup(true);
               setSelectedProduct(product);
             }}
+            onDelete={handleSingleDelete}
           />
         ))}
       </div>
@@ -154,7 +182,7 @@ const ProductListPage = () => {
         <UpdateProductPopup
           productToUpdate={selectedProduct}
           onClose={() => setShowUpdatePopup(false)}
-          onUpdate={console.log("Updated:", selectedProduct)}
+          onSubmit={handleUpdateProduct}
         />
       )}
     </AdminLayout>

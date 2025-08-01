@@ -49,4 +49,15 @@ const addProduct = async (name, query, stores, session) => {
   }
 };
 
-module.exports = { addProduct };
+const updateProduct = async (id, updates) => {
+  try {
+    return await Product.findByIdAndUpdate(id, updates, { new: true });
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      throw new Error("Invalid update data");
+    }
+    throw error;
+  }
+};
+
+module.exports = { addProduct, updateProduct };

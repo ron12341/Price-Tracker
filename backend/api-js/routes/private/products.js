@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
+const controller = require("../../controllers/product");
 const Product = require("../../models/Product");
 const { authMiddleware, isAdmin } = require("../../middleware/authMiddleware");
 
@@ -68,5 +69,7 @@ router.delete("/:id", async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 });
+
+router.put("/:id", controller.updateProduct);
 
 module.exports = router;
