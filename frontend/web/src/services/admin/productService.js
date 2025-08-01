@@ -47,4 +47,28 @@ const deleteProducts = async (ids) => {
   }
 };
 
-export { addProduct, deleteProducts };
+const updateProduct = async (id, name, query, imageUrl, stores) => {
+  const token = JSON.parse(localStorage.getItem("user"))?.token;
+  try {
+    const response = await axios.put(
+      `${baseUrl}/${id}`,
+      {
+        name: name,
+        query: query,
+        imageUrl: imageUrl,
+        stores: stores,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+};
+
+export { addProduct, deleteProducts, updateProduct };
