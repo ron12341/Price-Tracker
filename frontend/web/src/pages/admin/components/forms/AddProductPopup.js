@@ -34,6 +34,11 @@ const AddProductPopup = ({ onClose, onSubmit }) => {
       break;
     }
 
+    if (stores.length <= 0) {
+      alert("Please add at least one store.");
+      return;
+    }
+
     while (true) {
       for (let i = 0; i < stores.length; i++) {
         if (stores[i].storeName === "" || stores[i].url === "") {

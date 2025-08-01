@@ -5,46 +5,26 @@ const ProductCard = ({ product, onUpdate, onDelete, isSelected, onSelect }) => {
 
   return (
     <div
-      className={`border rounded-lg shadow-sm overflow-hidden ${
+      className={`border rounded-lg shadow-sm overflow-hidden border-cyan-500 ${
         isSelected ? "ring-2 ring-blue-500" : ""
       }`}
     >
       {/* Card Header */}
-      <div className="flex items-center p-4 bg-gray-50">
-        <input
-          id={product._id}
-          type="checkbox"
-          checked={isSelected}
-          onChange={onSelect}
-          className="w-5 h-5 mr-3"
-        />
+      <div className="flex items-center py-2 px-4 bg-gray-100">
+        <input id={product._id} type="checkbox" checked={isSelected} onChange={onSelect} className="w-5 h-5 mr-3" />
 
         <div className="flex-1 flex justify-between items-center">
-          {isExpanded ? (
-            <p></p>
-          ) : (
-            <h3 className="font-medium text-lg text-black">{product.query}</h3>
-          )}
+          {isExpanded ? <p></p> : <h3 className="font-medium text-lg text-black">{product.query}</h3>}
 
           <div className="flex space-x-2">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="p-1 text-gray-500 hover:text-gray-700"
-            >
+            <button onClick={() => setIsExpanded(!isExpanded)} className="p-1 text-gray-500 hover:text-gray-700">
               <svg
-                className={`w-5 h-5 transition-transform ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
+                className={`w-5 h-5 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
           </div>
@@ -69,10 +49,7 @@ const ProductCard = ({ product, onUpdate, onDelete, isSelected, onSelect }) => {
                 <p className="text-md text-gray-500">Stores</p>
                 <div className="space-y-2 mt-1">
                   {product.stores?.map((store, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-row justify-between p-2 border rounded"
-                    >
+                    <div key={index} className="flex flex-row justify-between p-2 border rounded">
                       <p className="font-medium">{store.storeName}</p>
                       <p>${store.price}</p>
                       <a
@@ -92,10 +69,7 @@ const ProductCard = ({ product, onUpdate, onDelete, isSelected, onSelect }) => {
             {/* Action Buttons */}
             <div className="flex justify-end space-x-2 mt-4">
               <>
-                <button
-                  onClick={onUpdate}
-                  className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                >
+                <button onClick={onUpdate} className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
                   Edit
                 </button>
                 <button
