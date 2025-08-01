@@ -26,7 +26,7 @@ async def scrape(request: ScrapeRequest):
             price, img = scrape_newegg(store.url, imageUrl)
         elif storeName == "canada computers" or storeName == "canadacomputers":
             price, img = scrape_canada_computers(store.url, imageUrl)
-        elif storeName == "ebay":
+        else:
             price, img = "N/A", None
 
         # set image url if not already set
@@ -40,3 +40,8 @@ async def scrape(request: ScrapeRequest):
         })
 
     return {"stores": results, "imageUrl": imageUrl or ""}
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
