@@ -4,13 +4,12 @@ import Navbar from "./components/Navbar";
 import { FiBox, FiUsers, FiArchive, FiTrash2, FiChevronRight } from "react-icons/fi";
 import { getCounts } from "@adminServices/statsService";
 import { useAuth } from "@context/AuthContext";
-import { useAdminCounts } from "@context/AdminCountsContext";
 
 const HomeAdmin = () => {
   const { user, isAuthLoading } = useAuth();
-  const { counts, isCountsLoading } = useAdminCounts();
   const navigate = useNavigate();
 
+  const [counts, setCounts] = useState([]);
   const [adminSections, setAdminSections] = useState([
     {
       name: "Products",
@@ -58,12 +57,10 @@ const HomeAdmin = () => {
   };
 
   useEffect(() => {
-    console.log(counts);
+    if (user && !isAuthLoading) {
+      handleFetchCounts();
+    }
   });
-
-  if (isCountsLoading) {
-    return <div>Loading Counts...</div>;
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">

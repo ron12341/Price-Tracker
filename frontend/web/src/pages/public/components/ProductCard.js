@@ -36,7 +36,7 @@ const ProductCard = ({ product, isTracked, onTrackingProduct }) => {
           <span className="mr-1.5">$</span>
           {lowestPriceStore.price}
         </p>
-        <p className="capitalize">{lowestPriceStore.storeName}</p>
+        <p className="capitalize text-center">{lowestPriceStore.storeName}</p>
       </div>
     </div>
   );
