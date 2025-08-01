@@ -1,4 +1,3 @@
-const axios = require("axios");
 const Product = require("../models/Product");
 const ProductSuggestion = require("../models/ProductSuggestion");
 const User = require("../models/User");
@@ -8,20 +7,18 @@ const getCounts = async () => {
   const productSuggestions = await ProductSuggestion.countDocuments();
   const users = await User.countDocuments();
 
-  if (!products || !productSuggestions || !users) throw new Error("Failed to fetch counts");
-
   return [
     {
       name: "Products",
-      value: products,
+      value: products || 0,
     },
     {
       name: "Product Suggestions",
-      value: productSuggestions,
+      value: productSuggestions || 0,
     },
     {
       name: "Users",
-      value: users,
+      value: users || 0,
     },
   ];
 };

@@ -45,6 +45,17 @@ router.get("/:id", async (req, res) => {
       return res.json(cachedProduct);
     }
 
+    // Check if the scraping server is available
+    try {
+      await axios.get("http://localhost:8000/health");
+    } catch (error) {
+      // If the scraping server is not available, return the cached version
+      if (cachedProduct) {
+        return res.status(200).json(cachedProduct);
+      }
+      return res.status(500).json({ error: "Scraping failed and no cached data" });
+    }
+
     try {
       // If not cached, trigger scraper in FastAPI
       const response = await axios.post("http://localhost:8000/scrape", {

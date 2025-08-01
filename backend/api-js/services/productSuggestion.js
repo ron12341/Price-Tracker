@@ -156,8 +156,10 @@ const deleteProductSuggestionAsOwner = async (id, userId) => {
   }
 
   if (suggestion.status !== "pending" && suggestion.status !== "rejected") {
-    throw new Error("Product suggestion is not editable");
+    throw new Error("Cannot delete approved product suggestion");
   }
+
+  const result = await ProductSuggestion.deleteOne({ _id: id });
 
   return result;
 };
