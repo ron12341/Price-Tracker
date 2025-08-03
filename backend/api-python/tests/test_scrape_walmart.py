@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 from scrapers.scrape_walmart import scrape_walmart
 import requests
+from bs4 import BeautifulSoup
 
 class TestScrapeWalmart(unittest.TestCase):
     @patch('requests.get')
@@ -46,22 +47,17 @@ class TestScrapeWalmart(unittest.TestCase):
 
     @patch('requests.get')
     def test_request_exception(self, mock_get):
-        mock_get.side_effect = requests.exceptions.RequestException('Mocked exception')
+        mock_get.side_effect = requests.exceptions.RequestException('Mocked request exception')
         url = 'https://www.walmart.com/product'
         result = scrape_walmart(url)
         self.assertEqual(result, ('N/A', None))
 
     @patch('requests.get')
     def test_general_exception(self, mock_get):
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.text = '<html><body><span itemprop="price">$10.99</span></body></html>'
-        mock_get.return_value = mock_response
-        with patch('scrapers.scrape_walmart.BeautifulSoup') as mock_bs:
-            mock_bs.side_effect = Exception('Mocked exception')
-            url = 'https://www.walmart.com/product'
-            result = scrape_walmart(url)
-            self.assertEqual(result, ('N/A', None))
+        mock_get.side_effect = Exception('Mocked general exception')
+        url = 'https://www.walmart.com/product'
+        result = scrape_walmart(url)
+        self.assertEqual(result, ('N/A', None))
 
     def test_empty_url(self):
         url = ''

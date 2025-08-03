@@ -25,7 +25,7 @@ def scrape_canada_computers(url: str, imgUrl: Optional[str] = None) -> tuple[str
 
 
       # Scrape the price
-      price = None
+      price = "N/A"
       price_selectors = [
          ".product-price .current-price span[itemprop='price']",
       ]

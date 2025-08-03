@@ -23,12 +23,12 @@ def scrape_newegg(url: str, imgUrl: Optional[str] = None) -> tuple[str, Optional
 
       soup = BeautifulSoup(response.text, "html.parser")
 
-      price = None
+      price = "N/A"
 
       price_selectors = [
-         ".product-offer a",
          ".product-price .price-current",
          ".product-top-info .price-current",
+         ".product-offer strong",
       ]
 
       for selector in price_selectors:
