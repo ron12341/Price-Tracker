@@ -22,6 +22,9 @@ app.use("/product-suggestions", productSuggestionRouter);
 const authRouter = require("./routes/public/auth"); // Auth
 app.use("/auth", authRouter);
 
+const userRouter = require("./routes/public/user"); // User
+app.use("/users", userRouter);
+
 //
 // PRIVATE ROUTES
 //
@@ -30,6 +33,9 @@ app.use("/admin/product-suggestions", adminProductSuggestionRouter);
 
 const adminProductsRouter = require("./routes/private/products"); // Products
 app.use("/admin/products", adminProductsRouter);
+
+const adminStatsRouter = require("./routes/private/stats"); // Stats
+app.use("/admin/stats", adminStatsRouter);
 
 // Health check
 app.get("/", (req, res) => {
