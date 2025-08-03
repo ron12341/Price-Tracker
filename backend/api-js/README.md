@@ -2,21 +2,34 @@
 
 This Express API handles data flow between the frontend and the price scraper.
 
-## Endpoints
+## Public Routes
 
-### Public Routes
+| Method | Routes              | Descriptions                    | Auth Required |
+| ------ | ------------------- | ------------------------------- | ------------- |
+| GET    | /products           | List all tracked products       | x             |
+| GET    | /producuts/:id      | Get data for one product        | x             |
+| POST   | /product-suggestion | Suggest a product to be tracked | x             |
 
-| Method | Routes         | Descriptions              | Auth Required |
-| ------ | -------------- | ------------------------- | ------------- |
-| GET    | /products      | List all tracked products | x             |
-| GET    | /producuts/:id | Get data for one product  | x             |
+## Admin Routes
 
-### Admin Routes
+### Products
 
-| Method | Routes                      | Descriptions               | Auth Required |
-| ------ | --------------------------- | -------------------------- | ------------- |
-| POST   | /admin/products             | Add a new product to track | (admin)       |
-| POST   | /admin/products/bulk-delete | Delete multiple products   | (admin)       |
+| Method | Routes                        | Descriptions               | Auth Required |
+| ------ | ----------------------------- | -------------------------- | ------------- |
+| POST   | `/admin/products `            | Add a new product to track | (admin)       |
+| POST   | `/admin/products/bulk-delete` | Delete multiple products   | (admin)       |
+
+### Product Suggestions
+
+**Base URL: `/admin/product-suggestions`**
+
+| Method | Route           | Description                   | Auth Required |
+| ------ | --------------- | ----------------------------- | ------------- |
+| GET    | `/`             | List all suggestions          | (admin)       |
+| POST   | `/:id/approve`  | Approve a suggestion          | (admin)       |
+| POST   | `/bulk-approve` | Approve a list of suggestions | (admin)       |
+| PUT    | `/:id`          | Update a suggestion           | (admin)       |
+| POST   | `/bulk-delete`  | Delete multiple suggestions   | (admin)       |
 
 ### Auth Routes
 
