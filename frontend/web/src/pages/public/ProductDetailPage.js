@@ -101,14 +101,15 @@ const ProductDetailPage = () => {
         }
 
         const response = await axios.get(`http://localhost:5000/products/${id}`, config);
+        const { product, alert } = response.data;
 
         // Sort stores by price
-        if (response.data.stores?.length > 0) {
-          response.data.stores = sortByPrice(response.data.stores);
+        if (product.stores?.length > 0) {
+          product.stores = sortByPrice(product.stores);
         }
 
-        setProduct(response.data.product);
-        setAlert(response.data.alert);
+        setProduct(product);
+        setAlert(alert || null);
       } catch (error) {
         console.error("Error fetching product:", error);
         setProduct(null);
@@ -118,7 +119,7 @@ const ProductDetailPage = () => {
     };
 
     fetchProduct();
-  }, [id, user]);
+  }, [id, isAuthLoading, user]);
 
   // Loading state
   if (isLoading || isAuthLoading) {
