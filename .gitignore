@@ -9,7 +9,7 @@ venv/
 env/
 
 # === Node/JavaScript ===
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -22,7 +22,7 @@ env/
 .coverage
 
 # === Production Builds ===
-/build
+build
 /dist
 .cache
 
