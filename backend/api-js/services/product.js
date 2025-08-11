@@ -2,6 +2,8 @@ const axios = require("axios");
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
 
+const MAX_CACHE_TIME = 2 * 60 * 60 * 1000; // 2 hour in milliseconds
+
 const addProduct = async (name, query, stores, session) => {
   // Input validation at service level
   if (!name || !query || !stores) {
@@ -49,6 +51,57 @@ const addProduct = async (name, query, stores, session) => {
   }
 };
 
+const getProduct = async (id) => {
+  try {
+    // Check if the product is cached
+    const cachedProduct = await Product.findById(id);
+    const now = new Date();
+
+    if (cachedProduct && now - cachedProduct.scrapedAt < MAX_CACHE_TIME) {
+      // If the product is cached, return the cached version
+      return cachedProduct;
+    }
+
+    // Check if the scraping server is available
+    try {
+      await axios.get("http://localhost:8000/health");
+    } catch (error) {
+      // If the scraping server is not available, return the cached version
+      if (cachedProduct) {
+        return cachedProduct;
+      }
+      return { error: "Scraping service is not available" };
+    }
+
+    try {
+      // If not cached, trigger scraper in FastAPI
+      const response = await axios.post("http://localhost:8000/scrape", {
+        query: cachedProduct.query,
+        stores: cachedProduct.stores,
+        imageUrl: cachedProduct.imageUrl,
+      });
+      const data = response.data;
+
+      // Save the product to the database
+      const updated = await Product.findByIdAndUpdate(
+        { _id: id },
+        { scrapedAt: new Date(), stores: data.stores },
+        { upsert: true, new: true }
+      );
+
+      return updated;
+    } catch (scrapeError) {
+      if (cachedProduct) {
+        return cachedProduct;
+      }
+      return { error: `Scraping failed: ${scrapeError.message}` };
+    }
+  } catch (err) {
+    console.error(err);
+    return { error: "Internal server error" };
+  }
+};
+
 const updateProduct = async (id, updates) => {
   try {
     return await Product.findByIdAndUpdate(id, updates, { new: true });
@@ -60,4 +113,4 @@ const updateProduct = async (id, updates) => {
   }
 };
 
-module.exports = { addProduct, updateProduct };
+module.exports = { addProduct, updateProduct, getProduct };

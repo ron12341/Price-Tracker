@@ -18,6 +18,24 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split(" ")[1];
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch (error) {
+      return res.status(401).json({ error: "Invalid Token" });
+    }
+  } else {
+    console.log("NO AUTH HEADER");
+    next();
+  }
+};
+
 const isAdmin = (req, res, next) => {
   if (req.user.isAdmin) {
     next();
@@ -26,4 +44,4 @@ const isAdmin = (req, res, next) => {
   }
 };
 
-module.exports = { authMiddleware, isAdmin };
+module.exports = { authMiddleware, isAdmin, optionalAuth };

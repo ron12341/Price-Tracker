@@ -25,6 +25,9 @@ app.use("/auth", authRouter);
 const userRouter = require("./routes/public/user"); // User
 app.use("/users", userRouter);
 
+const alertRouter = require("./routes/public/alert"); // Alert
+app.use("/alerts", alertRouter);
+
 //
 // PRIVATE ROUTES
 //

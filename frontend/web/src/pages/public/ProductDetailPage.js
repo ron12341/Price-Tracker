@@ -1,13 +1,16 @@
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 import { handleTrackProduct } from "@publicServices/userService";
+import { setPriceAlert } from "@publicServices/alertService";
 import { useLoading } from "@context/LoadingContext";
 import { useAuth } from "@context/AuthContext";
 
 import Narvbar from "./components/Navbar";
 import TrackButton from "./components/TrackButton";
+import AlertForm from "./components/AlertForm";
 
 const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -34,6 +37,7 @@ const ProductDetailPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [isTracked, setIsTracked] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const handleTrackingProducts = async (productId) => {
     if (!user && !isAuthLoading) {
@@ -52,6 +56,25 @@ const ProductDetailPage = () => {
     }
   };
 
+  const handleSetAlert = async (targetPrice, isActive) => {
+    if (!user && !isAuthLoading) {
+      navigate("/auth/login", { replace: true });
+      return;
+    }
+
+    try {
+      const response = await setPriceAlert(user.token, product._id, {
+        targetPrice: targetPrice,
+        isActive: isActive,
+      });
+
+      setAlert(response);
+    } catch (error) {
+      console.error("Error setting alert:", error);
+      throw error;
+    }
+  };
+
   const sortByPrice = (stores) => {
     return stores.sort((a, b) => a.price - b.price);
   };
@@ -64,15 +87,28 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      if (isAuthLoading) return;
+
       showLoading("Fetching product...");
       try {
-        const response = await axios.get(`http://localhost:5000/products/${id}`);
+        const config = {};
+
+        // Add Authorization header if user exists and has a token
+        if (user?.token) {
+          config.headers = {
+            Authorization: `Bearer ${user.token}`,
+          };
+        }
+
+        const response = await axios.get(`http://localhost:5000/products/${id}`, config);
 
         // Sort stores by price
-        if (response.data.stores.length > 0) {
+        if (response.data.stores?.length > 0) {
           response.data.stores = sortByPrice(response.data.stores);
         }
-        setProduct(response.data);
+
+        setProduct(response.data.product);
+        setAlert(response.data.alert);
       } catch (error) {
         console.error("Error fetching product:", error);
         setProduct(null);
@@ -82,10 +118,10 @@ const ProductDetailPage = () => {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, user]);
 
   // Loading state
-  if (isLoading) {
+  if (isLoading || isAuthLoading) {
     return null;
   }
 
@@ -116,7 +152,7 @@ const ProductDetailPage = () => {
         </div>
         <div className="flex-1 h-fit">
           <p className="text-[16px] mb-[10px] text-[#666]">Last Scraped at: {formatDate(product.scrapedAt)}</p>
-          <div className="w-full overflow-x-auto">
+          <div className="w-full overflow-x-auto mb-4">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#e0e0e0] font-bold">
@@ -147,6 +183,9 @@ const ProductDetailPage = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="mb-6 p-4 bg-white rounded-lg shadow-md border border-gray-200">
+            <AlertForm currentAlert={alert} onSetAlert={handleSetAlert} isLoading={isLoading} />
           </div>
         </div>
       </div>

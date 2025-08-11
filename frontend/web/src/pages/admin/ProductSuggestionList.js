@@ -106,7 +106,7 @@ const ProductSuggestionListPage = () => {
   }, []);
 
   return (
-    <AdminLayout current="Products Suggestions">
+    <AdminLayout current="Product Suggestions">
       <div className="flex justify-between items-center mb-6 text-2xl">
         <p>Select collection to change</p>
         <button
@@ -129,7 +129,7 @@ const ProductSuggestionListPage = () => {
         <select
           value={action}
           onChange={(e) => setAction(e.target.value)}
-          className="bg-transparent text-white border border-gray-500 rounded px-2 py-1"
+          className="bg-transparent text-black border border-gray-500 rounded px-2 py-1"
         >
           <option className="text-black" value="default">
             --------

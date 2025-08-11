@@ -42,7 +42,6 @@ const AdminLayout = ({ children, current, counts = {} }) => {
                 }`}
               >
                 <span className="text-gray-700">{label}</span>
-                <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">{count || 0}</span>
               </div>
             ))}
           </div>
